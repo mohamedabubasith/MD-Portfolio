@@ -1,13 +1,38 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Section from './Section';
 import { EmailIcon, PhoneIcon, LocationIcon, HobbyIcon } from './Icons';
 
 const Contact: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert("Connection request sent.");
-    (e.target as HTMLFormElement).reset();
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
+    
+    setStatus('submitting');
+    try {
+      const response = await fetch("https://formspree.io/f/mgodpjpz", {
+        method: "POST",
+        body: data,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        setStatus('success');
+        form.reset();
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 3000);
+      }
+    } catch (error) {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
   };
 
   return (
@@ -34,8 +59,8 @@ const Contact: React.FC = () => {
               <span className="bg-[#76b900]/10 rounded-lg p-2 border border-[#76b900]/30 group-hover:bg-[#76b900]/30 transition-colors">
                 <EmailIcon className="text-[#b8ff33]" />
               </span>
-              <a href="mailto:abubasith86@gmail.com" className="text-gray-300 font-mono hover:text-[#b8ff33] transition-colors relative">
-                abubasith86@gmail.com
+              <a href="mailto:abubasith456@gmail.com" className="text-gray-300 font-mono hover:text-[#b8ff33] transition-colors relative">
+                abubasith456@gmail.com
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#76b900] transition-all duration-300 group-hover:w-full"></span>
               </a>
             </div>
@@ -61,12 +86,26 @@ const Contact: React.FC = () => {
           <form onSubmit={handleSubmit} className="glow-hover bg-neutral-900/40 backdrop-blur-md rounded-2xl border border-white/5 p-8 relative space-y-6">
             <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent to-[#76b900] opacity-60"></div>
             <div className="space-y-4">
-              <input type="text" placeholder="GUEST_IDENTITY" required className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33]"/>
-              <input type="email" placeholder="RETURN_ADDRESS" required className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33]"/>
-              <textarea placeholder="PAYLOAD" rows={5} required className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33] resize-none"></textarea>
+              <input type="text" name="name" placeholder="Name" required disabled={status === 'submitting'} className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33] disabled:opacity-50"/>
+              <input type="email" name="email" placeholder="Email Address" required disabled={status === 'submitting'} className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33] disabled:opacity-50"/>
+              <textarea name="message" placeholder="Message" rows={5} required disabled={status === 'submitting'} className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33] resize-none disabled:opacity-50"></textarea>
             </div>
-            <button type="submit" className="w-full bg-[#76b900]/10 text-[#b8ff33] rounded-xl border border-[#76b900] font-mono text-sm py-4 px-6 uppercase tracking-widest hover:bg-[#76b900]/30 hover:shadow-[0_0_15px_rgba(118,185,0,0.4)] transition-all">
-              Initialize Transmission
+            <button type="submit" disabled={status === 'submitting'} className="w-full relative flex items-center justify-center bg-[#76b900]/10 text-[#b8ff33] rounded-xl border border-[#76b900] font-mono text-sm py-4 px-6 uppercase tracking-widest hover:bg-[#76b900]/30 hover:shadow-[0_0_15px_rgba(118,185,0,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+              {status === 'submitting' ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-5 w-5 text-[#b8ff33]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending...
+                </span>
+              ) : status === 'success' ? (
+                'Message Sent!'
+              ) : status === 'error' ? (
+                'Error Sending'
+              ) : (
+                'Send Message'
+              )}
             </button>
           </form>
         </div>

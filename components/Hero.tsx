@@ -20,7 +20,7 @@ const Hero: React.FC = () => {
             Building production-grade real-time voice-to-voice AI agents and enterprise Knowledge Base platforms with multi-pipeline RAG architectures.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a href="mailto:abubasith86@gmail.com" className="flex items-center justify-center gap-3 bg-[#76b900] text-black font-bold text-sm py-3 px-6 rounded-xl border border-[#76b900] uppercase tracking-widest transition-all duration-300 hover:bg-[#b8ff33] hover:border-[#b8ff33] hover:-translate-y-1 shadow-[0_0_15px_rgba(118,185,0,0.4)] hover:shadow-[0_0_25px_rgba(184,255,51,0.6)]">
+            <a href="mailto:abubasith456@gmail.com" className="flex items-center justify-center gap-3 bg-[#76b900] text-black font-bold text-sm py-3 px-6 rounded-xl border border-[#76b900] uppercase tracking-widest transition-all duration-300 hover:bg-[#b8ff33] hover:border-[#b8ff33] hover:-translate-y-1 shadow-[0_0_15px_rgba(118,185,0,0.4)] hover:shadow-[0_0_25px_rgba(184,255,51,0.6)]">
               <EmailIcon />
               Contact Me
             </a>
