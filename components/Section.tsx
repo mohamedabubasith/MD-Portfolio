@@ -1,5 +1,6 @@
 
-import React, { useRef, useEffect, useState, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 interface SectionProps {
   id: string;
@@ -7,48 +8,18 @@ interface SectionProps {
   className?: string;
 }
 
-const useOnScreen = <T extends Element,>(options: IntersectionObserverInit): [React.RefObject<T>, boolean] => {
-  const ref = useRef<T>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIsVisible(true);
-        if (ref.current) {
-          observer.unobserve(ref.current);
-        }
-      }
-    }, options);
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      if (ref.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        observer.unobserve(ref.current);
-      }
-    };
-  }, [ref, options]);
-
-  return [ref, isVisible];
-};
-
-
 const Section: React.FC<SectionProps> = ({ id, children, className = '' }) => {
-  const [ref, isVisible] = useOnScreen<HTMLDivElement>({ threshold: 0.2 });
-  
   return (
-    <section 
-      id={id} 
-      ref={ref}
-      className={`py-20 md:py-28 ${className} ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
-    >
-      <div className="container mx-auto px-6">
+    <section id={id} className={`py-20 md:py-28 ${className}`}>
+      <motion.div 
+        className="container mx-auto px-6"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
         {children}
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -6,48 +6,67 @@ import { EmailIcon, PhoneIcon, LocationIcon, HobbyIcon } from './Icons';
 const Contact: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert("Thank you for your message! I'll get back to you soon.");
+    alert("Connection request sent.");
     (e.target as HTMLFormElement).reset();
   };
 
   return (
-    <Section id="contact" className="bg-primary-50">
-      <h2 className="text-4xl font-bold text-center text-text-dark font-heading mb-4">Get In Touch</h2>
-      <div className="w-20 h-1 bg-primary-200 mx-auto mb-12"></div>
+    <Section id="contact" className="bg-transparent border-t border-neutral-900 border-dashed">
+      <div className="flex flex-col items-center mb-16">
+        <h2 className="text-3xl md:text-5xl font-mono font-bold tracking-tighter uppercase mb-4">
+          <span className="gradient-text">Comm Link</span>
+        </h2>
+        <div className="w-24 h-1 bg-[#76b900] shadow-[0_0_15px_rgba(118,185,0,0.6)]"></div>
+      </div>
 
-      <div className="grid md:grid-cols-2 gap-12">
-        <div>
-          <h3 className="text-2xl font-bold text-text-dark font-heading mb-6">Contact Information</h3>
-          <p className="text-text-light mb-8">
-            Feel free to reach out to me for any opportunities or just to say hello! I'm always open to discussing new projects and creative ideas.
+      <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        <div className="glow-hover bg-neutral-900/40 backdrop-blur-md rounded-2xl border border-white/5 p-8 relative">
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#76b900] to-transparent opacity-60"></div>
+          <h3 className="text-xl font-bold font-mono text-[#b8ff33] mb-6 flex items-center gap-3">
+             <span className="w-2 h-2 rounded-full bg-[#76b900] inline-block shadow-[0_0_8px_#76b900]"></span>
+            Get In Touch
+          </h3>
+          <p className="text-gray-400 font-mono text-sm leading-relaxed mb-8">
+            I am always open to new opportunities, collaborations, and discussions about AI and software engineering. Feel free to reach out.
           </p>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <EmailIcon className="text-primary-300" />
-              <a href="mailto:abubasith86@gmail.com" className="text-text-light hover:text-text-dark">abubasith86@gmail.com</a>
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 group">
+              <span className="bg-[#76b900]/10 rounded-lg p-2 border border-[#76b900]/30 group-hover:bg-[#76b900]/30 transition-colors">
+                <EmailIcon className="text-[#b8ff33]" />
+              </span>
+              <a href="mailto:abubasith86@gmail.com" className="text-gray-300 font-mono hover:text-[#b8ff33] transition-colors relative">
+                abubasith86@gmail.com
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#76b900] transition-all duration-300 group-hover:w-full"></span>
+              </a>
             </div>
-            <div className="flex items-center gap-4">
-              <PhoneIcon className="text-primary-300" />
-              <a href="tel:+919585909514" className="text-text-light hover:text-text-dark">+91 9585909514</a>
+            <div className="flex items-center gap-4 group">
+              <span className="bg-[#76b900]/10 rounded-lg p-2 border border-[#76b900]/30 group-hover:bg-[#76b900]/30 transition-colors">
+                 <PhoneIcon className="text-[#b8ff33]" />
+              </span>
+              <a href="tel:+919585909514" className="text-gray-300 font-mono hover:text-[#b8ff33] transition-colors relative">
+                +91 9585909514
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#76b900] transition-all duration-300 group-hover:w-full"></span>
+              </a>
             </div>
-            <div className="flex items-center gap-4">
-              <LocationIcon className="text-primary-300" />
-              <span className="text-text-light">Perungudi, Chennai</span>
-            </div>
-             <div className="flex items-center gap-4">
-              <HobbyIcon className="text-primary-300" />
-              <span className="text-text-light">Playing Badminton</span>
+            <div className="flex items-center gap-4 opacity-80 cursor-default">
+              <span className="bg-neutral-800/50 rounded-lg p-2 border border-neutral-700">
+                <LocationIcon className="text-gray-400" />
+              </span>
+              <span className="text-gray-400 font-mono">Perungudi, Chennai</span>
             </div>
           </div>
         </div>
 
         <div>
-          <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg space-y-4">
-            <input type="text" placeholder="Your Name" required className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200"/>
-            <input type="email" placeholder="Your Email" required className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200"/>
-            <textarea placeholder="Your Message" rows={5} required className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200"></textarea>
-            <button type="submit" className="w-full bg-primary-200 text-text-dark font-bold py-3 px-6 rounded-lg hover:bg-primary-300 transition-all duration-300 transform hover:scale-105">
-              Send Message
+          <form onSubmit={handleSubmit} className="glow-hover bg-neutral-900/40 backdrop-blur-md rounded-2xl border border-white/5 p-8 relative space-y-6">
+            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent to-[#76b900] opacity-60"></div>
+            <div className="space-y-4">
+              <input type="text" placeholder="GUEST_IDENTITY" required className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33]"/>
+              <input type="email" placeholder="RETURN_ADDRESS" required className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33]"/>
+              <textarea placeholder="PAYLOAD" rows={5} required className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33] resize-none"></textarea>
+            </div>
+            <button type="submit" className="w-full bg-[#76b900]/10 text-[#b8ff33] rounded-xl border border-[#76b900] font-mono text-sm py-4 px-6 uppercase tracking-widest hover:bg-[#76b900]/30 hover:shadow-[0_0_15px_rgba(118,185,0,0.4)] transition-all">
+              Initialize Transmission
             </button>
           </form>
         </div>

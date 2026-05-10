@@ -54,19 +54,24 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/80 shadow-md backdrop-blur-sm' : 'bg-transparent'}`}>
-      <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#home" onClick={scrollToTop} className="text-2xl font-bold font-heading text-text-dark">M.A.B.</a>
+    <header className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? 'bg-black/80 backdrop-blur-md border-[#76b900]/30 shadow-[0_4px_30px_rgba(118,185,0,0.1)]' : 'bg-transparent border-transparent'}`}>
+      <nav className="container w-full max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#home" onClick={scrollToTop} className="text-2xl font-bold font-mono tracking-widest text-white flex items-center gap-2 group hover:opacity-80 transition-opacity">
+          MAB<span className="w-2.5 h-2.5 bg-[#76b900] shadow-[0_0_8px_#76b900] group-hover:bg-[#b8ff33] transition-colors"></span>
+        </a>
         <div className="hidden md:flex items-center space-x-8">
           {navLinks.map(link => (
-            <a key={link.href} href={link.href} onClick={(e) => handleNavClick(e, link.href)} className="text-text-dark font-medium hover:text-primary-300 transition-colors duration-300">{link.label}</a>
+            <a key={link.href} href={link.href} onClick={(e) => handleNavClick(e, link.href)} className="text-gray-300 font-mono text-sm uppercase hover:text-[#b8ff33] transition-colors duration-300 relative group">
+              {link.label}
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#b8ff33] transition-all duration-300 group-hover:w-full"></span>
+            </a>
           ))}
-          <a href="/resume.pdf" download="Mohamed_Abu_Basith_Resume.pdf" className="bg-primary-200 text-text-dark font-bold py-2 px-4 rounded-lg hover:bg-primary-300 transition-all duration-300 transform hover:scale-105">
-            Download Resume
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="glow-hover bg-[#76b900]/10 text-[#b8ff33] border border-[#76b900] font-mono text-sm py-2 px-4 uppercase tracking-wider backdrop-blur-sm">
+            Resume
           </a>
         </div>
         <div className="md:hidden">
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-text-dark focus:outline-none">
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white hover:text-[#b8ff33] focus:outline-none transition-colors">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}></path>
             </svg>
@@ -74,13 +79,15 @@ const Header: React.FC = () => {
         </div>
       </nav>
       {isMenuOpen && (
-        <div className="md:hidden bg-white shadow-lg">
+        <div className="md:hidden bg-black/95 border-b border-[#76b900]/30 shadow-[0_4px_30px_rgba(118,185,0,0.1)] backdrop-blur-lg">
           <div className="px-6 pt-2 pb-4 space-y-2 flex flex-col items-center">
             {navLinks.map(link => (
-              <a key={link.href} href={link.href} onClick={(e) => handleNavClick(e, link.href)} className="block text-text-dark font-medium hover:text-primary-300 transition-colors duration-300 py-2">{link.label}</a>
+              <a key={link.href} href={link.href} onClick={(e) => handleNavClick(e, link.href)} className="block text-gray-300 font-mono uppercase hover:text-[#b8ff33] transition-colors duration-300 py-3 w-full text-center border-b border-neutral-800">
+                {link.label}
+              </a>
             ))}
-            <a href="/resume.pdf" download="Mohamed_Abu_Basith_Resume.pdf" className="bg-primary-200 text-text-dark font-bold py-2 px-6 rounded-lg hover:bg-primary-300 transition-all duration-300 w-full text-center mt-2">
-              Download Resume
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="mt-4 bg-[#76b900]/20 text-[#b8ff33] border border-[#76b900] font-mono py-3 px-6 w-full text-center uppercase tracking-wider">
+              View Resume
             </a>
           </div>
         </div>

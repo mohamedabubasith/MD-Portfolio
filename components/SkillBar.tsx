@@ -39,16 +39,18 @@ const SkillBar: React.FC<SkillBarProps> = ({ name, level }) => {
   const [ref, isVisible] = useOnScreen<HTMLDivElement>({ threshold: 0.5 });
   
   return (
-    <div ref={ref}>
-      <div className="flex justify-between mb-1">
-        <span className="text-base font-medium text-text-dark">{name}</span>
-        <span className="text-sm font-medium text-primary-300">{level}%</span>
+    <div ref={ref} className="mb-6 group">
+      <div className="flex justify-between mb-2">
+        <span className="text-sm font-mono text-gray-300 uppercase tracking-wider">{name}</span>
+        <span className="text-sm font-mono text-[#b8ff33]">{level}%</span>
       </div>
-      <div className="w-full bg-primary-50 rounded-full h-2.5">
+      <div className="w-full bg-neutral-900 border border-neutral-800 h-2 p-[2px]">
         <div 
-          className="bg-primary-200 h-2.5 rounded-full transition-all duration-1000 ease-out" 
+          className="bg-gradient-to-r from-[#76b900] to-[#b8ff33] h-full transition-all duration-1000 ease-out relative" 
           style={{ width: isVisible ? `${level}%` : '0%' }}
-        ></div>
+        >
+          <div className="absolute top-0 right-0 h-full w-1 bg-white opacity-50 shadow-[0_0_10px_#ffffff]"></div>
+        </div>
       </div>
     </div>
   );

@@ -4,34 +4,41 @@ import Section from './Section';
 import SkillBar from './SkillBar';
 
 const skills = [
-  { name: 'Android', level: 90 },
-  { name: 'Flutter', level: 85 },
-  { name: 'React Native', level: 70 },
-  { name: 'Node.js', level: 60 },
-  { name: 'Firebase', level: 80 },
-  { name: 'Figma', level: 75 },
-  { name: 'Git', level: 95 },
-  { name: 'Android Studio', level: 95 },
-  { name: 'Visual Studio', level: 85 },
+  { name: 'Generative AI & LLMs', level: 95 },
+  { name: 'Python / Backend', level: 90 },
+  { name: 'TypeScript / React', level: 85 },
+  { name: 'Vector Databases', level: 90 },
+  { name: 'Android / Flutter', level: 85 }
 ];
 
 const About: React.FC = () => {
   return (
-    <Section id="about" className="bg-white">
-      <h2 className="text-4xl font-bold text-center text-text-dark font-heading mb-4">About Me</h2>
-      <div className="w-20 h-1 bg-primary-200 mx-auto mb-12"></div>
+    <Section id="about" className="bg-transparent border-t border-neutral-900 border-dashed">
+      <div className="flex flex-col items-center mb-16">
+        <h2 className="text-3xl md:text-5xl font-mono font-bold tracking-tighter uppercase mb-4">
+          <span className="gradient-text">About</span>
+        </h2>
+        <div className="w-24 h-1 bg-[#76b900] shadow-[0_0_15px_rgba(118,185,0,0.6)]"></div>
+      </div>
       
-      <div className="grid md:grid-cols-5 gap-12 items-center">
-        <div className="md:col-span-2">
-          <p className="text-lg text-text-light mb-4 leading-relaxed">
-            I am a dedicated and detail-oriented Android Engineer with a passion for creating intuitive and high-performance mobile applications. 
+      <div className="grid md:grid-cols-5 gap-16 items-center max-w-6xl mx-auto">
+        <div className="md:col-span-2 space-y-6">
+          <h3 className="font-mono text-[#b8ff33] text-xl flex items-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-[#b8ff33] inline-block shadow-[0_0_8px_#b8ff33]"></span>
+            Professional Summary
+          </h3>
+          <p className="text-gray-400 font-mono text-sm leading-relaxed">
+            Results-driven Generative AI Engineer and Software Engineer with 4+ years of industry experience. I specialize in leading production-grade Gen AI projects including real-time voice-to-voice conversational AI agents and enterprise Knowledge Base platforms.
           </p>
-          <p className="text-lg text-text-light leading-relaxed">
-            With a proven ability to handle multiple projects with high accuracy and efficiency, I thrive in collaborative environments and am always eager to learn new technologies to build better products.
+          <p className="text-gray-400 font-mono text-sm leading-relaxed">
+            Proficient in building multi-pipeline RAG architectures (Standard, HyDE, Hybrid, Graph) on Kubeflow, implementing MCP configurations, and weaving together LLM APIs like OpenAI and Anthropic with vector databases.
+          </p>
+          <p className="text-gray-500 font-mono text-sm leading-relaxed border-l-2 border-[#76b900] pl-4">
+            &gt; OFFLINE_STATUS: Badminton enthusiast.
           </p>
         </div>
         <div className="md:col-span-3">
-          <div className="space-y-6">
+          <div className="space-y-2">
             {skills.map(skill => (
               <SkillBar key={skill.name} name={skill.name} level={skill.level} />
             ))}
