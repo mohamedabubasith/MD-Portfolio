@@ -1354,7 +1354,7 @@ body.has-active .article:not(:hover) { opacity: 0.4; }
 
   .skills-grid { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; }
-  .about-avatar img { height: 260px; }
+  .about-avatar img { height: 360px; object-position: 50% 30%; }
   .stat-grid { grid-template-columns: 1fr 1fr; }
 
   .contact-grid { grid-template-columns: 1fr; gap: 40px; }

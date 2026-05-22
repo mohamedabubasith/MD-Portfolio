@@ -8,7 +8,12 @@ const Footer: React.FC = () => {
     return () => clearInterval(id);
   }, []);
 
-  const ts = time.toISOString().slice(0, 19).replace('T', ' ');
+  const ts = time.toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false,
+  }).replace(',', '');
 
   return (
     <footer className="footer">
@@ -16,7 +21,7 @@ const Footer: React.FC = () => {
         © {time.getFullYear()} <b>Mohamed Abu Basith</b> — END OF TRANSMISSION
       </div>
       <div style={{ color: 'var(--green)', fontFamily: 'var(--mono)', fontSize: '10px' }}>
-        {ts} UTC
+        {ts} IST
       </div>
       <div className="footer-links">
         <a href="https://github.com/mohamedabubasith" target="_blank" rel="noopener noreferrer" className="footer-link">GITHUB</a>
