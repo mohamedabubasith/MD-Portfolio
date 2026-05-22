@@ -102,9 +102,9 @@ const Hero: React.FC = () => {
           <a href="#contact" className="btn" onClick={e => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}>
             GET IN TOUCH <span className="arrow">↗</span>
           </a>
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn">
+          {/* <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn">
             RESUME <span className="arrow">↓</span>
-          </a>
+          </a> */}
         </div>
       </div>
       <aside className="hero-side">
