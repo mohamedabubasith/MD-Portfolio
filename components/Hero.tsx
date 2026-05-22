@@ -1,53 +1,126 @@
+import React, { useState, useEffect } from 'react';
 
-import React from 'react';
-import Section from './Section';
-import { EmailIcon } from './Icons';
+const WORDS = [
+  'building Gen AI systems.',
+  'shipping RAG pipelines.',
+  'designing voice AI agents.',
+  'engineering LLM infra.',
+];
+
+function TypingLoop() {
+  const [text, setText] = useState('');
+  const [wordIdx, setWordIdx] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = WORDS[wordIdx];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!deleting && text === current) {
+      timeout = setTimeout(() => setDeleting(true), 1800);
+    } else if (deleting && text === '') {
+      setDeleting(false);
+      setWordIdx(i => (i + 1) % WORDS.length);
+    } else {
+      timeout = setTimeout(() => {
+        setText(prev =>
+          deleting ? prev.slice(0, -1) : current.slice(0, prev.length + 1)
+        );
+      }, deleting ? 35 : 75);
+    }
+    return () => clearTimeout(timeout);
+  }, [text, deleting, wordIdx]);
+
+  return (
+    <span className="hero-sub-text">
+      {text}<span className="caret" />
+    </span>
+  );
+}
+
+function TelemetryPanel() {
+  const [vals, setVals] = useState({ uptime: 99.9, throughput: 12.4, latency: 48 });
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setVals({
+        uptime: +(99.1 + Math.random() * 0.9).toFixed(1),
+        throughput: +(10 + Math.random() * 5).toFixed(1),
+        latency: Math.round(40 + Math.random() * 20),
+      });
+    }, 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="panel">
+      <div className="panel-head">
+        <span>SYS · TELEMETRY</span>
+        <span className="live">LIVE</span>
+      </div>
+      <div className="tele-row">
+        <span className="k">UPTIME</span>
+        <span className="v good">{vals.uptime}%</span>
+      </div>
+      <div className="meter"><div style={{ width: vals.uptime + '%' }} /></div>
+      <div className="tele-row">
+        <span className="k">THROUGHPUT</span>
+        <span className="v">{vals.throughput}K tok/s</span>
+      </div>
+      <div className="meter"><div style={{ width: Math.min(100, vals.throughput * 5) + '%' }} /></div>
+      <div className="tele-row">
+        <span className="k">P50 LATENCY</span>
+        <span className="v">{vals.latency}ms</span>
+      </div>
+      <div className="meter"><div style={{ width: Math.min(100, vals.latency * 1.3) + '%' }} /></div>
+    </div>
+  );
+}
 
 const Hero: React.FC = () => {
   return (
-    <Section id="home" className="min-h-screen flex items-center bg-transparent py-20 mt-10">
-      <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-10">
-        <div className="md:w-3/5 text-center md:text-left z-10 font-mono">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-4 tracking-tighter">
-            <span className="gradient-text uppercase block pb-2">Mohamed</span>
-            <span className="gradient-text uppercase block">Abu Basith</span>
-          </h1>
-          <h2 className="text-xl md:text-2xl text-[#b8ff33] mb-6 flex items-center justify-center md:justify-start gap-4">
-            <span className="w-12 h-[2px] bg-[#76b900] hidden md:inline-block shadow-[0_0_10px_#76b900]"></span>
-            Generative AI & Software Engineer
-          </h2>
-          <p className="text-sm md:text-base text-gray-400 max-w-xl mx-auto md:mx-0 mb-10 leading-relaxed">
-            Building production-grade real-time voice-to-voice AI agents and enterprise Knowledge Base platforms with multi-pipeline RAG architectures.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a href="mailto:abubasith456@gmail.com" className="flex items-center justify-center gap-3 bg-[#76b900] text-black font-bold text-sm py-3 px-6 rounded-xl border border-[#76b900] uppercase tracking-widest transition-all duration-300 hover:bg-[#b8ff33] hover:border-[#b8ff33] hover:-translate-y-1 shadow-[0_0_15px_rgba(118,185,0,0.4)] hover:shadow-[0_0_25px_rgba(184,255,51,0.6)]">
-              <EmailIcon />
-              Contact Me
-            </a>
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="glow-hover flex items-center justify-center gap-3 bg-neutral-900/80 text-white font-bold text-sm py-3 px-6 rounded-xl border border-white/20 uppercase tracking-widest backdrop-blur-sm hover:border-[#76b900] hover:text-[#b8ff33] transition-all">
-              View Resume
-            </a>
-          </div>
+    <section className="hero" id="home">
+      <div className="hero-content">
+        <div className="hero-eyebrow">GENERATIVE AI ENGINEER · INDIA</div>
+        <h1 className="hero-name">
+          Mohamed<br />
+          Abu <span className="accent">Basith.</span>
+        </h1>
+        <div className="hero-sub">
+          <span className="hero-sub-prefix">$&gt;</span>
+          <TypingLoop />
         </div>
-        
-        <div className="md:w-2/5 flex justify-center z-10 relative mt-16 md:mt-0">
-          <div className="relative group perspective-1000">
-            {/* The neon green structural frame */}
-            <div className="absolute inset-0 border-2 border-[#76b900] translate-x-4 translate-y-4 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2 opacity-80 shadow-[0_0_15px_rgba(118,185,0,0.3)]"></div>
-            
-            {/* The image container */}
-            <div className="relative w-64 h-80 md:w-80 md:h-[400px] overflow-hidden border border-neutral-700 bg-neutral-900 z-10 filter grayscale brightness-90 contrast-125 transition-all duration-500 group-hover:grayscale-0 group-hover:brightness-100">
-              <img 
-                src="/profile.jpeg" 
-                alt="Mohamed Abu Basith Professional Headshot" 
-                className="w-full h-full object-cover mix-blend-luminosity opacity-80 group-hover:opacity-100 group-hover:mix-blend-normal transition-all duration-500"
-              />
-              <div className="absolute inset-0 bg-[#76b900]/10 mix-blend-overlay"></div>
-            </div>
-          </div>
+        <p className="hero-desc">
+          I build <b>production-grade Gen AI systems</b> — from real-time voice-to-voice
+          conversational agents to enterprise RAG platforms. 4+ years shipping software,
+          currently leading AI engineering at Grootan Technologies.
+        </p>
+        <div className="hero-cta">
+          <a href="#projects" className="btn btn-primary" onClick={e => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }); }}>
+            VIEW WORK <span className="arrow">→</span>
+          </a>
+          <a href="#contact" className="btn" onClick={e => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}>
+            GET IN TOUCH <span className="arrow">↗</span>
+          </a>
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn">
+            RESUME <span className="arrow">↓</span>
+          </a>
         </div>
       </div>
-    </Section>
+      <aside className="hero-side">
+        <TelemetryPanel />
+        <div className="panel">
+          <div className="panel-head">
+            <span>NOW · 2025</span>
+            <span style={{ color: 'var(--green)' }}>◢ ◣</span>
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.6 }}>
+            Leading <b style={{ color: 'var(--green)', fontWeight: 500 }}>Gen AI infra</b> at
+            Grootan Technologies. Open to AI consulting and interesting problems.
+          </div>
+        </div>
+      </aside>
+    </section>
   );
 };
 

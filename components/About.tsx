@@ -1,51 +1,77 @@
-
 import React from 'react';
-import Section from './Section';
-import SkillBar from './SkillBar';
-
-const skills = [
-  { name: 'Generative AI & LLMs', level: 95 },
-  { name: 'Python / Backend', level: 90 },
-  { name: 'TypeScript / React', level: 85 },
-  { name: 'Vector Databases', level: 90 },
-  { name: 'Android / Flutter', level: 85 }
-];
 
 const About: React.FC = () => {
   return (
-    <Section id="about" className="bg-transparent border-t border-neutral-900 border-dashed">
-      <div className="flex flex-col items-center mb-16">
-        <h2 className="text-3xl md:text-5xl font-mono font-bold tracking-tighter uppercase mb-4">
-          <span className="gradient-text">About</span>
-        </h2>
-        <div className="w-24 h-1 bg-[#76b900] shadow-[0_0_15px_rgba(118,185,0,0.6)]"></div>
-      </div>
-      
-      <div className="grid md:grid-cols-5 gap-16 items-center max-w-6xl mx-auto">
-        <div className="md:col-span-2 space-y-6">
-          <h3 className="font-mono text-[#b8ff33] text-xl flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#b8ff33] inline-block shadow-[0_0_8px_#b8ff33]"></span>
-            Professional Summary
-          </h3>
-          <p className="text-gray-400 font-mono text-sm leading-relaxed">
-            Results-driven Generative AI Engineer and Software Engineer with 4+ years of industry experience. I specialize in leading production-grade Gen AI projects including real-time voice-to-voice conversational AI agents and enterprise Knowledge Base platforms.
-          </p>
-          <p className="text-gray-400 font-mono text-sm leading-relaxed">
-            Proficient in building multi-pipeline RAG architectures (Standard, HyDE, Hybrid, Graph) on Kubeflow, implementing MCP configurations, and weaving together LLM APIs like OpenAI and Anthropic with vector databases.
-          </p>
-          <p className="text-gray-500 font-mono text-sm leading-relaxed border-l-2 border-[#76b900] pl-4">
-            &gt; OFFLINE_STATUS: Badminton enthusiast.
-          </p>
+    <section className="section" id="about">
+      <div className="section-head">
+        <div>
+          <div className="section-label reveal"><span className="num">/01</span> WHO</div>
+          <h2 className="section-title reveal d1">
+            Engineer building <em>Gen AI systems</em><br />
+            at the boundary of <em>LLMs</em> and <em>product</em>.
+          </h2>
         </div>
-        <div className="md:col-span-3">
-          <div className="space-y-2">
-            {skills.map(skill => (
-              <SkillBar key={skill.name} name={skill.name} level={skill.level} />
-            ))}
+        <div className="section-meta reveal d2">
+          <div>SECTION 01 / 05</div>
+          <div style={{ marginTop: 6 }}>// PROFILE</div>
+        </div>
+      </div>
+
+      <div className="about-grid">
+        <div className="about-text reveal d1">
+          <p>
+            I'm a <b>Generative AI Engineer</b> with 4+ years of industry experience building
+            production systems. I specialize in leading end-to-end Gen AI projects — from real-time
+            <b> voice-to-voice conversational agents</b> to enterprise Knowledge Base platforms.
+          </p>
+          <p>
+            My work sits where models meet infrastructure: architecting multi-pipeline
+            <b> RAG systems</b> (Standard, HyDE, Hybrid, Graph) on Kubeflow, implementing MCP
+            configurations, and connecting LLM APIs like OpenAI and Anthropic with vector databases
+            like Qdrant and Weaviate.
+          </p>
+          <p>
+            Before Gen AI, I spent 3 years building Android, Flutter, and React Native apps across
+            multiple client projects — which means I understand both the model layer and the product
+            that consumers actually touch.
+          </p>
+          <p className="note">&gt; OFFLINE_STATUS: Badminton enthusiast. Probably losing.</p>
+        </div>
+
+        <div className="about-side">
+          <div className="stat-grid reveal d2">
+            <div className="stat">
+              <div className="stat-num">4<span className="unit">yrs</span></div>
+              <div className="stat-label">SHIPPING SOFTWARE</div>
+            </div>
+            <div className="stat">
+              <div className="stat-num">7<span className="unit">+</span></div>
+              <div className="stat-label">RAG STRATEGIES</div>
+            </div>
+            <div className="stat">
+              <div className="stat-num">3<span className="unit">+</span></div>
+              <div className="stat-label">LLM PROVIDERS</div>
+            </div>
+            <div className="stat">
+              <div className="stat-num">∞</div>
+              <div className="stat-label">TOKENS PROCESSED</div>
+            </div>
+          </div>
+
+          <div className="panel reveal d3">
+            <div className="panel-head">
+              <span>CURRENT STACK</span>
+              <span style={{ color: 'var(--green)' }}>05</span>
+            </div>
+            <div className="tele-row"><span className="k">LLM</span><span className="v">OpenAI / Anthropic</span></div>
+            <div className="tele-row"><span className="k">INFRA</span><span className="v">Kubeflow / LiveKit</span></div>
+            <div className="tele-row"><span className="k">VECTOR DB</span><span className="v">Qdrant / Weaviate</span></div>
+            <div className="tele-row"><span className="k">LANG</span><span className="v">Python / TypeScript</span></div>
+            <div className="tele-row"><span className="k">MOBILE</span><span className="v">Android / Flutter</span></div>
           </div>
         </div>
       </div>
-    </Section>
+    </section>
   );
 };
 

@@ -1,116 +1,106 @@
-
 import React, { useState } from 'react';
-import Section from './Section';
-import { EmailIcon, PhoneIcon, LocationIcon, HobbyIcon } from './Icons';
 
 const Contact: React.FC = () => {
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitting(true);
     const form = e.target as HTMLFormElement;
     const data = new FormData(form);
-    
-    setStatus('submitting');
+
     try {
-      const response = await fetch("https://formspree.io/f/mgodpjpz", {
-        method: "POST",
+      const res = await fetch('https://formspree.io/f/xpwrbrdv', {
+        method: 'POST',
         body: data,
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: { Accept: 'application/json' },
       });
-      
-      if (response.ok) {
-        setStatus('success');
+      if (res.ok) {
+        setSubmitted(true);
         form.reset();
-        setTimeout(() => setStatus('idle'), 5000);
-      } else {
-        setStatus('error');
-        setTimeout(() => setStatus('idle'), 3000);
       }
-    } catch (error) {
-      setStatus('error');
-      setTimeout(() => setStatus('idle'), 3000);
+    } catch {
+      // silent fail — user can retry
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <Section id="contact" className="bg-transparent border-t border-neutral-900 border-dashed">
-      <div className="flex flex-col items-center mb-16">
-        <h2 className="text-3xl md:text-5xl font-mono font-bold tracking-tighter uppercase mb-4">
-          <span className="gradient-text">Comm Link</span>
-        </h2>
-        <div className="w-24 h-1 bg-[#76b900] shadow-[0_0_15px_rgba(118,185,0,0.6)]"></div>
+    <section className="section" id="contact">
+      <div className="section-head">
+        <div>
+          <div className="section-label reveal"><span className="num">/06</span> CHANNEL</div>
+          <h2 className="section-title reveal d1">
+            Let's <em>build</em> something.
+          </h2>
+        </div>
+        <div className="section-meta reveal d2">
+          <div>SECTION 06 / 06</div>
+          <div style={{ marginTop: 6 }}>// COMM LINK</div>
+        </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-        <div className="glow-hover bg-neutral-900/40 backdrop-blur-md rounded-2xl border border-white/5 p-8 relative">
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#76b900] to-transparent opacity-60"></div>
-          <h3 className="text-xl font-bold font-mono text-[#b8ff33] mb-6 flex items-center gap-3">
-             <span className="w-2 h-2 rounded-full bg-[#76b900] inline-block shadow-[0_0_8px_#76b900]"></span>
-            Get In Touch
-          </h3>
-          <p className="text-gray-400 font-mono text-sm leading-relaxed mb-8">
-            I am always open to new opportunities, collaborations, and discussions about AI and software engineering. Feel free to reach out.
+      <div className="contact-grid">
+        <div className="reveal d1">
+          <p className="contact-intro">
+            I'm open to interesting AI engineering problems, consulting on LLM infrastructure,
+            and conversations about building things that actually ship. Drop a message — I read
+            everything and reply within 24h.
           </p>
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 group">
-              <span className="bg-[#76b900]/10 rounded-lg p-2 border border-[#76b900]/30 group-hover:bg-[#76b900]/30 transition-colors">
-                <EmailIcon className="text-[#b8ff33]" />
-              </span>
-              <a href="mailto:abubasith456@gmail.com" className="text-gray-300 font-mono hover:text-[#b8ff33] transition-colors relative">
-                abubasith456@gmail.com
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#76b900] transition-all duration-300 group-hover:w-full"></span>
-              </a>
+          <div className="panel">
+            <div className="panel-head">
+              <span>STATUS</span>
+              <span className="live">OPEN</span>
             </div>
-            <div className="flex items-center gap-4 group">
-              <span className="bg-[#76b900]/10 rounded-lg p-2 border border-[#76b900]/30 group-hover:bg-[#76b900]/30 transition-colors">
-                 <PhoneIcon className="text-[#b8ff33]" />
-              </span>
-              <a href="tel:+919585909514" className="text-gray-300 font-mono hover:text-[#b8ff33] transition-colors relative">
-                +91 9585909514
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#76b900] transition-all duration-300 group-hover:w-full"></span>
-              </a>
-            </div>
-            <div className="flex items-center gap-4 opacity-80 cursor-default">
-              <span className="bg-neutral-800/50 rounded-lg p-2 border border-neutral-700">
-                <LocationIcon className="text-gray-400" />
-              </span>
-              <span className="text-gray-400 font-mono">Perungudi, Chennai</span>
-            </div>
+            <div className="tele-row"><span className="k">AVAILABILITY</span><span className="v good">Open to consult</span></div>
+            <div className="tele-row"><span className="k">TIMEZONE</span><span className="v">IST (UTC+5:30)</span></div>
+            <div className="tele-row"><span className="k">RESPONSE TIME</span><span className="v">&lt; 24h</span></div>
+            <div className="tele-row"><span className="k">PREFERRED</span><span className="v">Email / LinkedIn</span></div>
           </div>
         </div>
 
-        <div>
-          <form onSubmit={handleSubmit} className="glow-hover bg-neutral-900/40 backdrop-blur-md rounded-2xl border border-white/5 p-8 relative space-y-6">
-            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent to-[#76b900] opacity-60"></div>
-            <div className="space-y-4">
-              <input type="text" name="name" placeholder="Name" required disabled={status === 'submitting'} className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33] disabled:opacity-50"/>
-              <input type="email" name="email" placeholder="Email Address" required disabled={status === 'submitting'} className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33] disabled:opacity-50"/>
-              <textarea name="message" placeholder="Message" rows={5} required disabled={status === 'submitting'} className="w-full p-3 bg-black/40 rounded-xl border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-[#76b900] focus:ring-1 focus:ring-[#76b900] transition-all caret-[#b8ff33] resize-none disabled:opacity-50"></textarea>
-            </div>
-            <button type="submit" disabled={status === 'submitting'} className="w-full relative flex items-center justify-center bg-[#76b900]/10 text-[#b8ff33] rounded-xl border border-[#76b900] font-mono text-sm py-4 px-6 uppercase tracking-widest hover:bg-[#76b900]/30 hover:shadow-[0_0_15px_rgba(118,185,0,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-              {status === 'submitting' ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-5 w-5 text-[#b8ff33]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Sending...
-                </span>
-              ) : status === 'success' ? (
-                'Message Sent!'
-              ) : status === 'error' ? (
-                'Error Sending'
-              ) : (
-                'Send Message'
-              )}
+        <form className="contact-form reveal d2" onSubmit={handleSubmit}>
+          <div className="field">
+            <label>NAME</label>
+            <input type="text" name="name" placeholder="your name" required disabled={submitting} />
+          </div>
+          <div className="field">
+            <label>EMAIL</label>
+            <input type="email" name="email" placeholder="your@email.com" required disabled={submitting} />
+          </div>
+          <div className="field">
+            <label>MESSAGE</label>
+            <textarea name="message" placeholder="what are you building?" rows={5} required disabled={submitting} />
+          </div>
+          <div className="submit-row">
+            <button type="submit" className="btn btn-primary" disabled={submitting || submitted}>
+              {submitted ? 'TRANSMITTED ✓' : submitting ? 'SENDING...' : 'SEND MESSAGE'}
+              {!submitted && !submitting && <span className="arrow">↗</span>}
             </button>
-          </form>
-        </div>
+            <div className={`submit-status${submitted ? ' show' : ''}`}>
+              Packet delivered — expect a reply within 24h
+            </div>
+          </div>
+        </form>
       </div>
-    </Section>
+
+      <div className="contact-foot">
+        <a className="contact-link reveal d1" href="mailto:mohamedabu.basith@gmail.com">
+          <span className="k">EMAIL</span>
+          <span className="v">mohamedabu.basith@gmail.com</span>
+        </a>
+        <a className="contact-link reveal d2" href="https://github.com/mohamedabubasith" target="_blank" rel="noopener noreferrer">
+          <span className="k">GITHUB</span>
+          <span className="v">github.com/mohamedabubasith</span>
+        </a>
+        <a className="contact-link reveal d3" href="https://www.linkedin.com/in/mohamedabubasith" target="_blank" rel="noopener noreferrer">
+          <span className="k">LINKEDIN</span>
+          <span className="v">in/mohamedabubasith</span>
+        </a>
+      </div>
+    </section>
   );
 };
 
