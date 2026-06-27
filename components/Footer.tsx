@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
       <div>
         © {time.getFullYear()} <b>Mohamed Abu Basith</b> — END OF TRANSMISSION
       </div>
-      <div style={{ color: 'var(--green)', fontFamily: 'var(--mono)', fontSize: '10px' }}>
+      <div style={{ color: 'var(--green)', fontFamily: 'var(--mono)', fontSize: '10px', fontVariantNumeric: 'tabular-nums' }}>
         {ts} IST
       </div>
       <div className="footer-links">

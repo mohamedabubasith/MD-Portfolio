@@ -148,7 +148,14 @@ export const Particles: React.FC = () => {
     };
 
     init();
-    animate();
+    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      // render a single static field instead of the animation loop
+      for (let i = 0; i < particlesArray.length; i++) particlesArray[i].draw();
+      connect();
+    } else {
+      animate();
+    }
 
     return () => {
       window.removeEventListener('resize', resize);

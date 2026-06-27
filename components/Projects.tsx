@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import CardTicks from './CardTicks';
 
 interface GHRepo {
   id: number;
@@ -130,52 +131,55 @@ const Projects: React.FC = () => {
 
   return (
     <section className="section" id="projects">
-      <div className="section-head">
-        <div>
-          <div className="section-label reveal"><span className="num">/02</span> WORK</div>
-          <h2 className="section-title reveal d1">
-            GitHub <em>projects</em>.
-          </h2>
+      <div className="bento projects-bento">
+        <div className="bento-head-card reveal">
+          <div className="section-head">
+            <div>
+              <div className="section-label"><span className="num">/02</span> WORK</div>
+              <h2 className="section-title">
+                GitHub <em>projects</em>.
+              </h2>
+            </div>
+            <div className="section-meta">
+              <div>LIVE FROM GITHUB</div>
+              <div style={{ marginTop: 6 }}>// REAL-TIME</div>
+            </div>
+          </div>
         </div>
-        <div className="section-meta reveal d2">
-          <div>LIVE FROM GITHUB</div>
-          <div style={{ marginTop: 6 }}>// REAL-TIME</div>
-        </div>
-      </div>
 
-      {loading && (
-        <div className="projects-loading">
-          <div className="spin" />
-          FETCHING REPOS FROM GITHUB
-        </div>
-      )}
+        {loading && (
+          <div className="projects-loading">
+            <div className="spin" />
+            FETCHING REPOS FROM GITHUB
+          </div>
+        )}
 
-      {error && (
-        <div className="projects-loading">
-          FAILED TO FETCH — CHECK NETWORK
-        </div>
-      )}
+        {error && (
+          <div className="projects-loading">
+            FAILED TO FETCH — CHECK NETWORK
+          </div>
+        )}
 
-      {!loading && !error && repos.length === 0 && (
-        <div className="projects-loading">
-          NO PUBLIC REPOS FOUND
-        </div>
-      )}
+        {!loading && !error && repos.length === 0 && (
+          <div className="projects-loading">
+            NO PUBLIC REPOS FOUND
+          </div>
+        )}
 
-      {!loading && !error && repos.length > 0 && (
-        <div className="projects">
-          {repos.map((repo, idx) => {
+        {!loading && !error && repos.length > 0 && (
+          repos.map((repo, idx) => {
             const visKind = VIS_TYPES[idx % VIS_TYPES.length];
-            const size = idx === 0 ? 'lg' : idx === 3 ? 'lg' : 'sm';
+            const col = repos.length > 1 && (idx === 0 || idx === 3) ? 'col-8' : 'col-4';
             const status = repo.archived ? 'archived' : 'live';
             const topics = getTopics(repo);
             return (
               <article
                 key={repo.id}
-                className={`project size-${size} reveal d${(idx % 4) + 1}`}
+                className={`project ${col} reveal d${(idx % 4) + 1}`}
                 onMouseEnter={() => document.body.classList.add('has-active')}
                 onMouseLeave={() => document.body.classList.remove('has-active')}
               >
+                <CardTicks />
                 <div className="project-head">
                   <span className="project-id">REPO_{String(idx + 1).padStart(3, '0')}</span>
                   <span className="project-head-r">
@@ -211,9 +215,9 @@ const Projects: React.FC = () => {
                 </div>
               </article>
             );
-          })}
-        </div>
-      )}
+          })
+        )}
+      </div>
     </section>
   );
 };

@@ -50,7 +50,7 @@ const App: React.FC = () => {
       </div>
       <div className="hud-side">MAB // GEN-AI v1.0</div>
 
-      <div style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.5s ease 0.1s' }}>
+      <div style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.4s ease' }}>
         <Particles />
         <Nav />
         <ScrollReveal />

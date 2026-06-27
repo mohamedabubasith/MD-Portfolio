@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import CardTicks from './CardTicks';
 
 const STACKS = [
   {
@@ -67,26 +68,29 @@ const Skills: React.FC = () => {
 
   return (
     <section className="section" id="skills">
-      <div className="section-head">
-        <div>
-          <div className="section-label reveal"><span className="num">/03</span> STACK</div>
-          <h2 className="section-title reveal d1">
-            Tools I <em>actually use</em>.
-          </h2>
+      <div className="bento skills-bento">
+        <div className="bento-head-card reveal">
+          <div className="section-head">
+            <div>
+              <div className="section-label"><span className="num">/03</span> STACK</div>
+              <h2 className="section-title">
+                Tools I <em>actually use</em>.
+              </h2>
+            </div>
+            <div className="section-meta">
+              <div>SECTION 03 / 05</div>
+              <div style={{ marginTop: 6 }}>// PROFICIENCY</div>
+            </div>
+          </div>
         </div>
-        <div className="section-meta reveal d2">
-          <div>SECTION 03 / 05</div>
-          <div style={{ marginTop: 6 }}>// PROFICIENCY</div>
-        </div>
-      </div>
 
-      <div className="skills-grid">
         {STACKS.map((group, gi) => (
           <div
             key={group.code}
-            className="skill-group reveal"
+            className={`skill-group col-6 reveal d${(gi % 4) + 1}`}
             ref={el => { groupRefs.current[gi] = el; }}
           >
+            <CardTicks />
             <div className="skill-group-head">
               <span className="skill-group-title">{group.title}</span>
               <span className="skill-group-code">{group.code}</span>

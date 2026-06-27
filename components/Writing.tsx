@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import CardTicks from './CardTicks';
 
 interface MediumPost {
   title: string;
@@ -55,45 +56,49 @@ const Writing: React.FC = () => {
 
   return (
     <section className="section" id="writing">
-      <div className="section-head">
-        <div>
-          <div className="section-label reveal"><span className="num">/05</span> SIGNAL</div>
-          <h2 className="section-title reveal d1">
-            Writing on <em>AI</em> and <em>engineering</em>.
-          </h2>
+      <div className="bento writing-bento">
+        <div className="bento-head-card reveal">
+          <div className="section-head">
+            <div>
+              <div className="section-label"><span className="num">/05</span> SIGNAL</div>
+              <h2 className="section-title">
+                Writing on <em>AI</em> and <em>engineering</em>.
+              </h2>
+            </div>
+            <div className="section-meta">
+              <div>LIVE FROM MEDIUM</div>
+              <div style={{ marginTop: 6 }}>// REAL-TIME</div>
+            </div>
+          </div>
         </div>
-        <div className="section-meta reveal d2">
-          <div>LIVE FROM MEDIUM</div>
-          <div style={{ marginTop: 6 }}>// REAL-TIME</div>
-        </div>
-      </div>
 
-      {loading && (
-        <div className="articles-loading">
-          <div className="spin" />
-          FETCHING ARTICLES FROM MEDIUM
-        </div>
-      )}
+        {loading && (
+          <div className="articles-loading">
+            <div className="spin" />
+            FETCHING ARTICLES FROM MEDIUM
+          </div>
+        )}
 
-      {error && (
-        <div className="articles-loading">
-          FAILED TO FETCH — CHECK NETWORK
-        </div>
-      )}
+        {error && (
+          <div className="articles-loading">
+            FAILED TO FETCH — CHECK NETWORK
+          </div>
+        )}
 
-      {!loading && !error && posts.length === 0 && (
-        <div className="articles-loading">
-          NO ARTICLES FOUND
-        </div>
-      )}
+        {!loading && !error && posts.length === 0 && (
+          <div className="articles-loading">
+            NO ARTICLES FOUND
+          </div>
+        )}
 
-      {!loading && !error && posts.length > 0 && (
-        <div
-          className="articles"
-          onMouseEnter={() => document.body.classList.add('has-active')}
-          onMouseLeave={() => document.body.classList.remove('has-active')}
-        >
-          {posts.map((post, idx) => {
+        {!loading && !error && posts.length > 0 && (
+          <div
+            className="articles"
+            onMouseEnter={() => document.body.classList.add('has-active')}
+            onMouseLeave={() => document.body.classList.remove('has-active')}
+          >
+            <CardTicks />
+            {posts.map((post, idx) => {
             const excerpt = stripHtml(post.description).slice(0, 200) + '…';
             const readTime = estimateReadTime(stripHtml(post.description));
             return (
@@ -127,8 +132,9 @@ const Writing: React.FC = () => {
               </a>
             );
           })}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </section>
   );
 };

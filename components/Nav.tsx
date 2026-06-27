@@ -13,6 +13,7 @@ const NAV_ITEMS: [string, string][] = [
 const Nav: React.FC = () => {
   const [active, setActive] = useState('home');
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const sections = NAV_ITEMS.map(([id]) => id);
@@ -24,6 +25,7 @@ const Nav: React.FC = () => {
         if (el && el.offsetTop <= y) cur = s;
       }
       setActive(cur);
+      setScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -35,7 +37,8 @@ const Nav: React.FC = () => {
     return () => { document.body.style.overflow = ''; };
   }, [open]);
 
-  const scrollTo = (id: string) => {
+  const scrollTo = (id: string, e?: React.MouseEvent) => {
+    e?.preventDefault();
     const el = document.getElementById(id);
     if (el) {
       const offset = id === 'home' ? 0 : el.offsetTop - 80;
@@ -47,13 +50,14 @@ const Nav: React.FC = () => {
   return (
     <>
       <div className={`nav-backdrop${open ? ' show' : ''}`} onClick={() => setOpen(false)} />
-      <nav className="nav">
-        <a className="nav-logo" onClick={() => scrollTo('home')} style={{ cursor: 'none' }}>MAB</a>
+      <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
+        <a className="nav-logo" href="#home" onClick={e => scrollTo('home', e)} style={{ cursor: 'none' }}>MAB</a>
         {NAV_ITEMS.map(([id, label]) => (
           <a
             key={id}
+            href={`#${id}`}
             className={`nav-item${active === id ? ' active' : ''}`}
-            onClick={() => scrollTo(id)}
+            onClick={e => scrollTo(id, e)}
           >
             {label}
           </a>
@@ -70,8 +74,9 @@ const Nav: React.FC = () => {
         {NAV_ITEMS.map(([id, label]) => (
           <a
             key={id}
+            href={`#${id}`}
             className={`nav-mobile-item${active === id ? ' active' : ''}`}
-            onClick={() => scrollTo(id)}
+            onClick={e => scrollTo(id, e)}
           >
             {label}
           </a>

@@ -1,4 +1,5 @@
 import React from 'react';
+import CardTicks from './CardTicks';
 
 const EXP = [
   {
@@ -64,38 +65,45 @@ const EXP = [
 const Experience: React.FC = () => {
   return (
     <section className="section" id="experience">
-      <div className="section-head">
-        <div>
-          <div className="section-label reveal"><span className="num">/04</span> TIMELINE</div>
-          <h2 className="section-title reveal d1">
-            4 years, <em>one company</em>, many chapters.
-          </h2>
-        </div>
-        <div className="section-meta reveal d2">
-          <div>2021 ────── 2025</div>
-          <div style={{ marginTop: 6 }}>// CAREER LOG</div>
-        </div>
-      </div>
-
-      <div className="timeline">
-        {EXP.map((e, i) => (
-          <div key={i} className={`tl-item reveal d${(i % 4) + 1}`}>
-            <div className="tl-meta">
-              <span>{e.date}</span>
-              {e.now && <span className="now">NOW</span>}
+      <div className="bento experience-bento">
+        <div className="bento-head-card reveal">
+          <div className="section-head">
+            <div>
+              <div className="section-label"><span className="num">/04</span> TIMELINE</div>
+              <h2 className="section-title">
+                4 years, <em>one company</em>, many chapters.
+              </h2>
             </div>
-            <div className="tl-role">{e.role}</div>
-            <div className="tl-co"><b>{e.co}</b></div>
-            <div className="tl-desc">
-              <ul>
-                {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
-              </ul>
-            </div>
-            <div className="tl-tags">
-              {e.tags.map(t => <span key={t} className="tag">{t}</span>)}
+            <div className="section-meta">
+              <div>2021 ────── 2025</div>
+              <div style={{ marginTop: 6 }}>// CAREER LOG</div>
             </div>
           </div>
-        ))}
+        </div>
+
+        <div className="bento-card is-data timeline-card col-12">
+          <CardTicks />
+          <div className="timeline">
+            {EXP.map((e, i) => (
+              <div key={i} className={`tl-item reveal d${(i % 4) + 1}`}>
+                <div className="tl-meta">
+                  <span>{e.date}</span>
+                  {e.now && <span className="now">NOW</span>}
+                </div>
+                <div className="tl-role">{e.role}</div>
+                <div className="tl-co"><b>{e.co}</b></div>
+                <div className="tl-desc">
+                  <ul>
+                    {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                  </ul>
+                </div>
+                <div className="tl-tags">
+                  {e.tags.map(t => <span key={t} className="tag">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

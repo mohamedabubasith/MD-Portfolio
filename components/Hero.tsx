@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CardTicks from './CardTicks';
 
 const WORDS = [
   'building Gen AI systems.',
@@ -8,11 +9,13 @@ const WORDS = [
 ];
 
 function TypingLoop() {
-  const [text, setText] = useState('');
+  const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const [text, setText] = useState(reduced ? WORDS[0] : '');
   const [wordIdx, setWordIdx] = useState(0);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
+    if (reduced) return;
     const current = WORDS[wordIdx];
     let timeout: ReturnType<typeof setTimeout>;
 
@@ -29,11 +32,11 @@ function TypingLoop() {
       }, deleting ? 35 : 75);
     }
     return () => clearTimeout(timeout);
-  }, [text, deleting, wordIdx]);
+  }, [text, deleting, wordIdx, reduced]);
 
   return (
     <span className="hero-sub-text">
-      {text}<span className="caret" />
+      {text}{!reduced && <span className="caret" />}
     </span>
   );
 }
@@ -54,23 +57,24 @@ function TelemetryPanel() {
 
   return (
     <div className="panel">
+      <CardTicks />
       <div className="panel-head">
         <span>SYS · TELEMETRY</span>
         <span className="live">LIVE</span>
       </div>
       <div className="tele-row">
         <span className="k">UPTIME</span>
-        <span className="v good">{vals.uptime}%</span>
+        <span className="v good value-pulse" key={'u' + vals.uptime}>{vals.uptime}%</span>
       </div>
       <div className="meter"><div style={{ width: vals.uptime + '%' }} /></div>
       <div className="tele-row">
         <span className="k">THROUGHPUT</span>
-        <span className="v">{vals.throughput}K tok/s</span>
+        <span className="v value-pulse" key={'t' + vals.throughput}>{vals.throughput}K tok/s</span>
       </div>
       <div className="meter"><div style={{ width: Math.min(100, vals.throughput * 5) + '%' }} /></div>
       <div className="tele-row">
         <span className="k">P50 LATENCY</span>
-        <span className="v">{vals.latency}ms</span>
+        <span className="v value-pulse" key={'l' + vals.latency}>{vals.latency}ms</span>
       </div>
       <div className="meter"><div style={{ width: Math.min(100, vals.latency * 1.3) + '%' }} /></div>
     </div>
@@ -80,7 +84,10 @@ function TelemetryPanel() {
 const Hero: React.FC = () => {
   return (
     <section className="hero" id="home">
-      <div className="hero-content">
+      <div className="bento hero-bento">
+        <div className="bento-card is-feature hero-anchor col-8">
+          <CardTicks />
+          <div className="hero-content">
         <div className="hero-eyebrow">GENERATIVE AI ENGINEER · INDIA</div>
         <h1 className="hero-name">
           Mohamed<br />
@@ -106,20 +113,23 @@ const Hero: React.FC = () => {
             RESUME <span className="arrow">↓</span>
           </a> */}
         </div>
-      </div>
-      <aside className="hero-side">
-        <TelemetryPanel />
-        <div className="panel">
-          <div className="panel-head">
-            <span>NOW · 2025</span>
-            <span style={{ color: 'var(--green)' }}>◢ ◣</span>
-          </div>
-          <div style={{ fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.6 }}>
-            Leading <b style={{ color: 'var(--green)', fontWeight: 500 }}>Gen AI infra</b> at
-            Grootan Technologies. Open to AI consulting and interesting problems.
           </div>
         </div>
-      </aside>
+        <aside className="hero-rail col-4">
+          <TelemetryPanel />
+          <div className="panel">
+            <CardTicks />
+            <div className="panel-head">
+              <span>NOW · 2025</span>
+              <span style={{ color: 'var(--green)' }}>◢ ◣</span>
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.6 }}>
+              Leading <b style={{ color: 'var(--green)', fontWeight: 500 }}>Gen AI infra</b> at
+              Grootan Technologies. Open to AI consulting and interesting problems.
+            </div>
+          </div>
+        </aside>
+      </div>
     </section>
   );
 };
