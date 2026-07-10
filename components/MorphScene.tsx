@@ -4,6 +4,9 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+// Mobile address bars show/hide as the user scrolls, firing resize events
+// that would otherwise make ScrollTrigger re-measure mid-scroll and jump.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const COUNT = 8000;
 
@@ -189,10 +192,19 @@ const MorphScene: React.FC = () => {
     };
     raf = requestAnimationFrame(tick);
 
+    // On mobile the address bar hiding/showing during scroll fires plain
+    // resize events with the same width but a different height; resizing
+    // the renderer/camera for those makes the canvas visibly jump. Only
+    // react when the width changes (real rotation/resize) or the height
+    // changes by more than a toolbar-sized amount.
+    let lastW = window.innerWidth, lastH = window.innerHeight;
     const onResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      const w = window.innerWidth, h = window.innerHeight;
+      if (w === lastW && Math.abs(h - lastH) < 150) return;
+      lastW = w; lastH = h;
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(w, h);
     };
     window.addEventListener('resize', onResize);
 
