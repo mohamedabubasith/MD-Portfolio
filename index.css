@@ -254,12 +254,21 @@ body.ready .hero .typing, body.ready .hero .sub, body.ready .hero .hero-cta, bod
    bar shows/hides, unlike plain vh which resizes mid-scroll and makes the
    scrub-driven layout below jump around. vh is kept as a fallback for
    browsers without svh support.
-   Height matches the 4 panel-slides (4 * 100vh) exactly — a taller value
-   here left dead empty space after the last card before the next section. */
-.journey { height: 400vh; height: 400svh; }
-.journey .panel-slide { height: 100vh; height: 100svh; display: flex; align-items: center; padding: 0 6vw; position: relative; }
+   Panels use min-height (a floor for the cinematic full-screen feel) rather
+   than a fixed height, and the idx caption ("01 / 04 — ANDROID" etc.) flows
+   right under the paragraph instead of being pinned to the bottom of the
+   panel — pinning it left a large dead gap under short cards on wide/short
+   desktop viewports. The track height is auto, so it always matches its
+   content with no leftover dead scroll space. */
+.journey { height: auto; }
+.journey .panel-slide {
+  min-height: 78vh; min-height: 78svh;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  padding: 8vh 6vw; position: relative;
+}
+.journey .panel-slide:nth-child(even) { align-items: flex-end; }
 .journey .card { max-width: 420px; opacity: 0; transform: translateY(50px); }
-.journey .panel-slide:nth-child(even) .card { margin-left: auto; text-align: right; }
+.journey .panel-slide:nth-child(even) .card { text-align: right; }
 .journey .year { font-family: var(--mono); font-size: 13px; letter-spacing: .22em; margin-bottom: 16px; }
 .journey h3 {
   font-family: var(--display); font-weight: 700;
@@ -267,10 +276,9 @@ body.ready .hero .typing, body.ready .hero .sub, body.ready .hero .hero-cta, bod
 }
 .journey p { color: var(--dim); font-size: 15px; line-height: 1.75; }
 .journey .idx {
-  position: absolute; bottom: 7vh; bottom: 7svh; left: 6vw;
+  margin-top: 26px;
   font-family: var(--mono); font-size: 12px; color: var(--dim); letter-spacing: .2em;
 }
-.journey .panel-slide:nth-child(even) .idx { left: auto; right: 6vw; }
 
 /* ============ SECTIONS (generic) ============ */
 .sectionblock {
@@ -613,21 +621,12 @@ footer.site-footer {
 
   /* Each panel was a full screen for only a few lines of text — on mobile
      that meant swiping through 4 entire screens of mostly empty space to
-     read the Journey section. Size each panel to its actual content
-     instead of a fixed viewport fraction (min-height as a floor only),
-     and let the idx label flow below the text rather than being pinned
-     to the bottom of a tall panel, so long paragraphs never overlap it.
-     The track's height is no longer fixed either — it now follows the
-     natural (shorter) height of its content. */
-  .journey { height: auto; }
-  .journey .panel-slide {
-    height: auto; min-height: 46vh; min-height: 46svh;
-    flex-direction: column; align-items: flex-start; justify-content: center;
-    padding: 7vh 6vw;
-  }
-  .journey .idx { position: static; margin-top: 22px; }
-
-  .journey .panel-slide:nth-child(even) .card { margin-left: 0; text-align: left; }
+     read the Journey section. Shrink the floor further than desktop's, and
+     keep every panel left-aligned (the desktop alternating left/right
+     layout doesn't suit a single narrow column). */
+  .journey .panel-slide { min-height: 46vh; min-height: 46svh; padding: 7vh 6vw; }
+  .journey .panel-slide:nth-child(even) { align-items: flex-start; }
+  .journey .panel-slide:nth-child(even) .card { text-align: left; }
 
   .section-head { flex-direction: column; align-items: flex-start; }
   .section-head .section-meta { text-align: left; }
