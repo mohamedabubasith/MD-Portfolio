@@ -253,8 +253,10 @@ body.ready .hero .typing, body.ready .hero .sub, body.ready .hero .hero-cta, bod
 /* svh (stable viewport height) stays fixed while a mobile browser's address
    bar shows/hides, unlike plain vh which resizes mid-scroll and makes the
    scrub-driven layout below jump around. vh is kept as a fallback for
-   browsers without svh support. */
-.journey { height: 480vh; height: 480svh; }
+   browsers without svh support.
+   Height matches the 4 panel-slides (4 * 100vh) exactly — a taller value
+   here left dead empty space after the last card before the next section. */
+.journey { height: 400vh; height: 400svh; }
 .journey .panel-slide { height: 100vh; height: 100svh; display: flex; align-items: center; padding: 0 6vw; position: relative; }
 .journey .card { max-width: 420px; opacity: 0; transform: translateY(50px); }
 .journey .panel-slide:nth-child(even) .card { margin-left: auto; text-align: right; }
