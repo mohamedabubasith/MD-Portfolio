@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import CardTicks from './CardTicks';
 
 const WORDS = [
   'building Gen AI systems.',
@@ -35,7 +34,7 @@ function TypingLoop() {
   }, [text, deleting, wordIdx, reduced]);
 
   return (
-    <span className="hero-sub-text">
+    <span>
       {text}{!reduced && <span className="caret" />}
     </span>
   );
@@ -57,7 +56,6 @@ function TelemetryPanel() {
 
   return (
     <div className="panel">
-      <CardTicks />
       <div className="panel-head">
         <span>SYS · TELEMETRY</span>
         <span className="live">LIVE</span>
@@ -82,54 +80,53 @@ function TelemetryPanel() {
 }
 
 const Hero: React.FC = () => {
+  const scrollTo = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className="hero" id="home">
-      <div className="bento hero-bento">
-        <div className="bento-card is-feature hero-anchor col-8">
-          <CardTicks />
-          <div className="hero-content">
-        <div className="hero-eyebrow">GENERATIVE AI ENGINEER · INDIA</div>
-        <h1 className="hero-name">
-          Mohamed<br />
-          Abu <span className="accent">Basith.</span>
-        </h1>
-        <div className="hero-sub">
-          <span className="hero-sub-prefix">$&gt;</span>
-          <TypingLoop />
-        </div>
-        <p className="hero-desc">
-          I build <b>production-grade Gen AI systems</b> — from real-time voice-to-voice
-          conversational agents to enterprise RAG platforms. 4+ years shipping software,
-          currently leading AI engineering at Grootan Technologies.
-        </p>
-        <div className="hero-cta">
-          <a href="#projects" className="btn btn-primary" onClick={e => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }); }}>
-            VIEW WORK <span className="arrow">→</span>
-          </a>
-          <a href="#contact" className="btn" onClick={e => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}>
-            GET IN TOUCH <span className="arrow">↗</span>
-          </a>
-          {/* <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn">
-            RESUME <span className="arrow">↓</span>
-          </a> */}
-        </div>
-          </div>
-        </div>
-        <aside className="hero-rail col-4">
-          <TelemetryPanel />
-          <div className="panel">
-            <CardTicks />
-            <div className="panel-head">
-              <span>NOW · 2025</span>
-              <span style={{ color: 'var(--green)' }}>◢ ◣</span>
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.6 }}>
-              Leading <b style={{ color: 'var(--green)', fontWeight: 500 }}>Gen AI infra</b> at
-              Grootan Technologies. Open to AI consulting and interesting problems.
-            </div>
-          </div>
-        </aside>
+      <div className="eyebrow"><span>GENERATIVE AI ENGINEER — CHENNAI, INDIA</span></div>
+      <h1>
+        <span className="line"><span>MOHAMED</span></span>
+        <span className="line"><span className="arc">ABU BASITH.</span></span>
+      </h1>
+      <div className="typing">
+        <span className="prefix">$&gt;</span>
+        <TypingLoop />
       </div>
+      <p className="sub">
+        I build <b>production-grade Gen AI systems</b> — from real-time voice-to-voice
+        conversational agents to enterprise RAG platforms. 4+ years shipping software,
+        currently leading AI engineering at Grootan Technologies.
+        The particles behind this text tell the story. Scroll.
+      </p>
+      <div className="hero-cta">
+        <a href="#projects" className="btn btn-primary" onClick={scrollTo('projects')}>
+          VIEW WORK <span className="arrow">→</span>
+        </a>
+        <a href="#contact" className="btn" onClick={scrollTo('contact')}>
+          GET IN TOUCH <span className="arrow">↗</span>
+        </a>
+        {/* <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn">
+          RESUME <span className="arrow">↓</span>
+        </a> */}
+      </div>
+      <div className="hero-rail">
+        <TelemetryPanel />
+        <div className="panel">
+          <div className="panel-head">
+            <span>NOW · {new Date().getFullYear()}</span>
+            <span style={{ color: 'var(--cyan)' }}>◢ ◣</span>
+          </div>
+          <div className="panel-note">
+            Leading <b>Gen AI infra</b> at Grootan Technologies.
+            Open to AI consulting and interesting problems.
+          </div>
+        </div>
+      </div>
+      <div className="hint">SCROLL TO MORPH</div>
     </section>
   );
 };

@@ -16,18 +16,17 @@ const Footer: React.FC = () => {
   }).replace(',', '');
 
   return (
-    <footer className="footer">
-      <div>
+    <footer className="site-footer">
+      <div className="foot-line">
         © {time.getFullYear()} <b>Mohamed Abu Basith</b> — END OF TRANSMISSION
       </div>
-      <div style={{ color: 'var(--green)', fontFamily: 'var(--mono)', fontSize: '10px', fontVariantNumeric: 'tabular-nums' }}>
-        {ts} IST
-      </div>
+      <div className="clock">{ts} IST</div>
       <div className="footer-links">
-        <a href="https://github.com/mohamedabubasith" target="_blank" rel="noopener noreferrer" className="footer-link">GITHUB</a>
-        <a href="https://www.linkedin.com/in/mohamedabubasith" target="_blank" rel="noopener noreferrer" className="footer-link">LINKEDIN</a>
-        <a href="https://medium.com/@mohamedabu.basith_91257" target="_blank" rel="noopener noreferrer" className="footer-link">MEDIUM</a>
+        <a href="https://github.com/mohamedabubasith" target="_blank" rel="noopener noreferrer">GITHUB</a>
+        <a href="https://www.linkedin.com/in/mohamedabubasith" target="_blank" rel="noopener noreferrer">LINKEDIN</a>
+        <a href="https://medium.com/@mohamedabu.basith_91257" target="_blank" rel="noopener noreferrer">MEDIUM</a>
       </div>
+      <div className="fine">MAB // GEN-AI v2.0 — THREE.JS · GSAP · SHADERS</div>
     </footer>
   );
 };

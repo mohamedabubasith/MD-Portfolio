@@ -1,5 +1,5 @@
 import React from 'react';
-import CardTicks from './CardTicks';
+import SectionHead from './SectionHead';
 
 const EXP = [
   {
@@ -62,48 +62,69 @@ const EXP = [
   },
 ];
 
+const EDUCATION = [
+  {
+    date: '2022 - 2024',
+    title: 'Master of Business Administration (MBA) – Marketing Management',
+    co: 'Alagappa University, Karaikudi',
+    desc: 'First Class. Registration No: 2022013600080',
+  },
+  {
+    date: '2017 - 2020',
+    title: 'Bachelor of Computer Application (BCA)',
+    co: 'Jamal Mohamed College, Tiruchirappalli',
+    desc: 'First Class. Roll No: 17US9753',
+  },
+  {
+    date: 'Certification',
+    title: 'Ethical Hacking',
+    co: 'CyberSec',
+    desc: 'Specialized in ethical hacking concepts and practical applications.',
+  },
+];
+
 const Experience: React.FC = () => {
   return (
-    <section className="section" id="experience">
-      <div className="bento experience-bento">
-        <div className="bento-head-card reveal">
-          <div className="section-head">
-            <div>
-              <div className="section-label"><span className="num">/04</span> TIMELINE</div>
-              <h2 className="section-title">
-                4 years, <em>one company</em>, many chapters.
-              </h2>
-            </div>
-            <div className="section-meta">
-              <div>2021 ────── 2025</div>
-              <div style={{ marginTop: 6 }}>// CAREER LOG</div>
-            </div>
-          </div>
-        </div>
+    <section className="sectionblock" id="experience">
+      <SectionHead
+        num="/04"
+        label="TIMELINE"
+        title="Career Log"
+        meta={['2021 ────── 2025', '// ONE COMPANY, MANY CHAPTERS']}
+      />
 
-        <div className="bento-card is-data timeline-card col-12">
-          <CardTicks />
-          <div className="timeline">
-            {EXP.map((e, i) => (
-              <div key={i} className={`tl-item reveal d${(i % 4) + 1}`}>
-                <div className="tl-meta">
-                  <span>{e.date}</span>
-                  {e.now && <span className="now">NOW</span>}
-                </div>
-                <div className="tl-role">{e.role}</div>
-                <div className="tl-co"><b>{e.co}</b></div>
-                <div className="tl-desc">
-                  <ul>
-                    {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
-                  </ul>
-                </div>
-                <div className="tl-tags">
-                  {e.tags.map(t => <span key={t} className="tag">{t}</span>)}
-                </div>
-              </div>
-            ))}
+      <div className="timeline">
+        {EXP.map((e, i) => (
+          <div key={i} className={`tl-item${e.now ? ' now' : ''} reveal d${(i % 4) + 1}`}>
+            <div className="tl-meta">
+              <span>{e.date}</span>
+              {e.now && <span className="now-badge">NOW</span>}
+            </div>
+            <div className="tl-role">{e.role}</div>
+            <div className="tl-co">{e.co}</div>
+            <div className="tl-desc">
+              <ul>
+                {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
+              </ul>
+            </div>
+            <div className="tl-tags">
+              {e.tags.map(t => <span key={t} className="tag">{t}</span>)}
+            </div>
           </div>
-        </div>
+        ))}
+      </div>
+
+      <div className="section-sub">EDUCATION // CREDENTIALS</div>
+
+      <div className="edu-grid">
+        {EDUCATION.map((edu, i) => (
+          <div key={i} className={`edu-card reveal d${i + 1}`}>
+            <div className="edu-date">{edu.date}</div>
+            <div className="edu-title">{edu.title}</div>
+            <div className="edu-co">{edu.co}</div>
+            <div className="edu-desc">{edu.desc}</div>
+          </div>
+        ))}
       </div>
     </section>
   );

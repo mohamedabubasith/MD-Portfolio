@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import CardTicks from './CardTicks';
+import SectionHead from './SectionHead';
 
 interface MediumPost {
   title: string;
@@ -47,58 +47,46 @@ const Writing: React.FC = () => {
           setError(true);
         }
         setLoading(false);
+        window.dispatchEvent(new Event('content-loaded'));
       })
       .catch(() => {
         setError(true);
         setLoading(false);
+        window.dispatchEvent(new Event('content-loaded'));
       });
   }, []);
 
   return (
-    <section className="section" id="writing">
-      <div className="bento writing-bento">
-        <div className="bento-head-card reveal">
-          <div className="section-head">
-            <div>
-              <div className="section-label"><span className="num">/05</span> SIGNAL</div>
-              <h2 className="section-title">
-                Writing on <em>AI</em> and <em>engineering</em>.
-              </h2>
-            </div>
-            <div className="section-meta">
-              <div>LIVE FROM MEDIUM</div>
-              <div style={{ marginTop: 6 }}>// REAL-TIME</div>
-            </div>
-          </div>
+    <section className="sectionblock" id="writing">
+      <SectionHead
+        num="/05"
+        label="SIGNAL"
+        title="Writing"
+        meta={['LIVE FROM MEDIUM', '// REAL-TIME']}
+      />
+
+      {loading && (
+        <div className="grid-loading">
+          <div className="spin" />
+          FETCHING ARTICLES FROM MEDIUM
         </div>
+      )}
 
-        {loading && (
-          <div className="articles-loading">
-            <div className="spin" />
-            FETCHING ARTICLES FROM MEDIUM
-          </div>
-        )}
+      {error && (
+        <div className="grid-loading">
+          FAILED TO FETCH — CHECK NETWORK
+        </div>
+      )}
 
-        {error && (
-          <div className="articles-loading">
-            FAILED TO FETCH — CHECK NETWORK
-          </div>
-        )}
+      {!loading && !error && posts.length === 0 && (
+        <div className="grid-loading">
+          NO ARTICLES FOUND
+        </div>
+      )}
 
-        {!loading && !error && posts.length === 0 && (
-          <div className="articles-loading">
-            NO ARTICLES FOUND
-          </div>
-        )}
-
-        {!loading && !error && posts.length > 0 && (
-          <div
-            className="articles"
-            onMouseEnter={() => document.body.classList.add('has-active')}
-            onMouseLeave={() => document.body.classList.remove('has-active')}
-          >
-            <CardTicks />
-            {posts.map((post, idx) => {
+      {!loading && !error && posts.length > 0 && (
+        <div className="articles">
+          {posts.map((post, idx) => {
             const excerpt = stripHtml(post.description).slice(0, 200) + '…';
             const readTime = estimateReadTime(stripHtml(post.description));
             return (
@@ -109,6 +97,7 @@ const Writing: React.FC = () => {
                 rel="noopener noreferrer"
                 className={`article reveal d${(idx % 4) + 1}`}
                 onMouseEnter={e => e.currentTarget.closest('.articles')?.classList.add('has-hover')}
+                onMouseLeave={e => e.currentTarget.closest('.articles')?.classList.remove('has-hover')}
               >
                 <div className="article-side">
                   <span className="article-id">ART_{String(idx + 1).padStart(3, '0')}</span>
@@ -120,7 +109,7 @@ const Writing: React.FC = () => {
                     <span className="article-m">M</span>
                     MEDIUM
                     {post.categories.slice(0, 2).map(c => (
-                      <span key={c} className="tag" style={{ fontSize: '8px', padding: '2px 6px' }}>{c}</span>
+                      <span key={c} className="tag">{c}</span>
                     ))}
                   </div>
                   <h3 className="article-title">{post.title}</h3>
@@ -132,9 +121,8 @@ const Writing: React.FC = () => {
               </a>
             );
           })}
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 };

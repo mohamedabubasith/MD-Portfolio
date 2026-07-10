@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import CardTicks from './CardTicks';
 
 const Contact: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -29,31 +28,19 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section className="section" id="contact">
-      <div className="bento contact-bento">
-        <div className="bento-head-card reveal">
-          <div className="section-head">
-            <div>
-              <div className="section-label"><span className="num">/06</span> CHANNEL</div>
-              <h2 className="section-title">
-                Let's <em>build</em> something.
-              </h2>
-            </div>
-            <div className="section-meta">
-              <div>SECTION 06 / 06</div>
-              <div style={{ marginTop: 6 }}>// COMM LINK</div>
-            </div>
-          </div>
-        </div>
+    <section className="contact" id="contact">
+      <div className="eyebrow reveal">OPEN TO INTERESTING PROBLEMS</div>
+      <h2 className="reveal d2">LET'S BUILD<br /><span className="hollow">WHAT'S NEXT</span></h2>
+      <a className="mail reveal d3" href="mailto:mohamedabu.basith@gmail.com">mohamedabu.basith@gmail.com</a>
 
-        <div className="bento-card is-data contact-aside col-5 reveal d1">
-          <CardTicks />
+      <div className="contact-grid">
+        <div className="panel reveal d1">
           <p className="contact-intro">
             I'm open to interesting AI engineering problems, consulting on LLM infrastructure,
             and conversations about building things that actually ship. Drop a message — I read
             everything and reply within 24h.
           </p>
-          <div className="bento-card-head">
+          <div className="panel-head">
             <span>STATUS</span>
             <span className="live">OPEN</span>
           </div>
@@ -63,8 +50,7 @@ const Contact: React.FC = () => {
           <div className="tele-row"><span className="k">PREFERRED</span><span className="v">Email / LinkedIn</span></div>
         </div>
 
-        <div className="bento-card is-feature contact-form-card col-7 reveal d2">
-          <CardTicks />
+        <div className="panel reveal d2">
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="field">
               <label htmlFor="cf-name">NAME</label>
@@ -89,24 +75,21 @@ const Contact: React.FC = () => {
             </div>
           </form>
         </div>
+      </div>
 
-        <div className="contact-foot">
-          <a className="contact-link reveal d1" href="mailto:mohamedabu.basith@gmail.com">
-            <CardTicks />
-            <span className="k">EMAIL</span>
-            <span className="v">mohamedabu.basith@gmail.com</span>
-          </a>
-          <a className="contact-link reveal d2" href="https://github.com/mohamedabubasith" target="_blank" rel="noopener noreferrer">
-            <CardTicks />
-            <span className="k">GITHUB</span>
-            <span className="v">github.com/mohamedabubasith</span>
-          </a>
-          <a className="contact-link reveal d3" href="https://www.linkedin.com/in/mohamedabubasith" target="_blank" rel="noopener noreferrer">
-            <CardTicks />
-            <span className="k">LINKEDIN</span>
-            <span className="v">in/mohamedabubasith</span>
-          </a>
-        </div>
+      <div className="contact-foot">
+        <a className="contact-link reveal d1" href="mailto:mohamedabu.basith@gmail.com">
+          <span className="k">EMAIL</span>
+          <span className="v">mohamedabu.basith@gmail.com</span>
+        </a>
+        <a className="contact-link reveal d2" href="https://github.com/mohamedabubasith" target="_blank" rel="noopener noreferrer">
+          <span className="k">GITHUB</span>
+          <span className="v">github.com/mohamedabubasith</span>
+        </a>
+        <a className="contact-link reveal d3" href="https://www.linkedin.com/in/mohamedabubasith" target="_blank" rel="noopener noreferrer">
+          <span className="k">LINKEDIN</span>
+          <span className="v">in/mohamedabubasith</span>
+        </a>
       </div>
     </section>
   );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const NAV_ITEMS: [string, string][] = [
   ['home', 'INDEX'],
+  ['journey', 'JOURNEY'],
   ['about', 'PROFILE'],
   ['projects', 'WORK'],
   ['skills', 'STACK'],
@@ -13,7 +14,6 @@ const NAV_ITEMS: [string, string][] = [
 const Nav: React.FC = () => {
   const [active, setActive] = useState('home');
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const sections = NAV_ITEMS.map(([id]) => id);
@@ -25,7 +25,6 @@ const Nav: React.FC = () => {
         if (el && el.offsetTop <= y) cur = s;
       }
       setActive(cur);
-      setScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -50,8 +49,8 @@ const Nav: React.FC = () => {
   return (
     <>
       <div className={`nav-backdrop${open ? ' show' : ''}`} onClick={() => setOpen(false)} />
-      <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
-        <a className="nav-logo" href="#home" onClick={e => scrollTo('home', e)} style={{ cursor: 'none' }}>MAB</a>
+      <nav className="nav">
+        <a className="nav-logo" href="#home" onClick={e => scrollTo('home', e)}>MAB®</a>
         {NAV_ITEMS.map(([id, label]) => (
           <a
             key={id}

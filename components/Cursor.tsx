@@ -3,65 +3,52 @@ import React, { useEffect, useRef } from 'react';
 const Cursor: React.FC = () => {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const trailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (window.innerWidth <= 760) return;
+    const dot = dotRef.current, ring = ringRef.current;
+    if (!dot || !ring) return;
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
 
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    const trail = trailRef.current;
-    if (!dot || !ring || !trail) return;
-
-    let mx = -100, my = -100;
-    let rx = -100, ry = -100;
-    let tx = -100, ty = -100;
-    let raf = 0;
-
+    let cx = 0, cy = 0, rx = 0, ry = 0, raf = 0;
     const onMove = (e: MouseEvent) => {
-      mx = e.clientX;
-      my = e.clientY;
+      cx = e.clientX; cy = e.clientY;
+      dot.style.transform = `translate(${cx - 4}px, ${cy - 4}px)`;
     };
-
-    const onEnter = () => ring.classList.add('hover');
-    const onLeave = () => ring.classList.remove('hover');
-
+    const follow = () => {
+      rx += (cx - rx) * 0.13;
+      ry += (cy - ry) * 0.13;
+      ring.style.transform = `translate(${rx - 20}px, ${ry - 20}px)`;
+      raf = requestAnimationFrame(follow);
+    };
     window.addEventListener('mousemove', onMove);
+    raf = requestAnimationFrame(follow);
 
-    document.querySelectorAll('a, button, .btn, .project, .article, .contact-link').forEach(el => {
-      el.addEventListener('mouseenter', onEnter);
-      el.addEventListener('mouseleave', onLeave);
-    });
-
-    const animate = () => {
-      dot.style.left = mx + 'px';
-      dot.style.top = my + 'px';
-
-      rx += (mx - rx) * 0.12;
-      ry += (my - ry) * 0.12;
-      ring.style.left = rx + 'px';
-      ring.style.top = ry + 'px';
-
-      tx += (mx - tx) * 0.06;
-      ty += (my - ty) * 0.06;
-      trail.style.left = tx + 'px';
-      trail.style.top = ty + 'px';
-
-      raf = requestAnimationFrame(animate);
+    /* delegated hover states — survives async-rendered links */
+    const onOver = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      if (t.closest('.p-item .media')) ring.classList.add('view');
+      else if (t.closest('a, button')) ring.classList.add('hovering');
     };
-    raf = requestAnimationFrame(animate);
+    const onOut = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      if (t.closest('.p-item .media')) ring.classList.remove('view');
+      if (t.closest('a, button')) ring.classList.remove('hovering');
+    };
+    document.addEventListener('mouseover', onOver);
+    document.addEventListener('mouseout', onOut);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseover', onOver);
+      document.removeEventListener('mouseout', onOut);
     };
   }, []);
 
   return (
     <>
-      <div ref={dotRef} className="cursor-dot" />
-      <div ref={ringRef} className="cursor-ring" />
-      <div ref={trailRef} className="cursor-trail" />
+      <div className="cursor" ref={dotRef} />
+      <div className="cursor-ring" ref={ringRef} />
     </>
   );
 };

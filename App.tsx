@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import Loader from './components/Loader';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Preloader from './components/Preloader';
 import Cursor from './components/Cursor';
+import ProgressBar from './components/ProgressBar';
+import MorphScene from './components/MorphScene';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
+import Journey from './components/Journey';
 import About from './components/About';
 import Projects from './components/Projects';
 import Skills from './components/Skills';
+import Marquee from './components/Marquee';
 import Experience from './components/Experience';
 import Writing from './components/Writing';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import { Particles } from './components/Particles';
 
 function ScrollReveal() {
   useEffect(() => {
@@ -41,30 +45,34 @@ function ScrollReveal() {
 const App: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
 
+  useEffect(() => {
+    if (!loaded) return;
+    // hero entrance animations are CSS-driven off this class
+    document.body.classList.add('ready');
+    // page height settles after the preloader leaves
+    ScrollTrigger.refresh();
+  }, [loaded]);
+
   return (
     <>
-      <Loader onDone={() => setLoaded(true)} />
+      <Preloader onDone={() => setLoaded(true)} />
+      <MorphScene />
       <Cursor />
-      <div className="hud-corners">
-        <span /><span /><span /><span />
-      </div>
-      <div className="hud-side">MAB // GEN-AI v1.0</div>
-
-      <div style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.4s ease' }}>
-        <Particles />
-        <Nav />
-        <ScrollReveal />
-        <main>
-          <Hero />
-          <About />
-          <Projects />
-          <Skills />
-          <Experience />
-          <Writing />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
+      <ProgressBar />
+      <Nav />
+      <ScrollReveal />
+      <main>
+        <Hero />
+        <Journey />
+        <About />
+        <Projects />
+        <Skills />
+        <Marquee />
+        <Experience />
+        <Writing />
+        <Contact />
+      </main>
+      <Footer />
     </>
   );
 };
