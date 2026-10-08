@@ -44,45 +44,6 @@ function TypingLoop() {
   );
 }
 
-function TelemetryPanel() {
-  const [vals, setVals] = useState({ uptime: 99.9, throughput: 12.4, latency: 48 });
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setVals({
-        uptime: +(99.1 + Math.random() * 0.9).toFixed(1),
-        throughput: +(10 + Math.random() * 5).toFixed(1),
-        latency: Math.round(40 + Math.random() * 20),
-      });
-    }, 3000);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <div className="panel">
-      <div className="panel-head">
-        <span>SYS · TELEMETRY</span>
-        <span className="live">LIVE</span>
-      </div>
-      <div className="tele-row">
-        <span className="k">UPTIME</span>
-        <span className="v good value-pulse" key={'u' + vals.uptime}>{vals.uptime}%</span>
-      </div>
-      <div className="meter"><div style={{ width: vals.uptime + '%' }} /></div>
-      <div className="tele-row">
-        <span className="k">THROUGHPUT</span>
-        <span className="v value-pulse" key={'t' + vals.throughput}>{vals.throughput}K tok/s</span>
-      </div>
-      <div className="meter"><div style={{ width: Math.min(100, vals.throughput * 5) + '%' }} /></div>
-      <div className="tele-row">
-        <span className="k">P50 LATENCY</span>
-        <span className="v value-pulse" key={'l' + vals.latency}>{vals.latency}ms</span>
-      </div>
-      <div className="meter"><div style={{ width: Math.min(100, vals.latency * 1.3) + '%' }} /></div>
-    </div>
-  );
-}
-
 const MARQUEE = ['MOHAMED ABU BASITH', 'GEN AI ENGINEER', 'MOHAMED ABU BASITH', 'AGENTIC AI · AWS'];
 
 const Hero: React.FC = () => {
@@ -133,19 +94,6 @@ const Hero: React.FC = () => {
         <div className="hint">SCROLL TO MORPH</div>
       </section>
 
-      <div className="hero-rail">
-        <TelemetryPanel />
-        <div className="panel">
-          <div className="panel-head">
-            <span>NOW · {new Date().getFullYear()}</span>
-            <span style={{ color: 'var(--cyan)' }}>◢ ◣</span>
-          </div>
-          <div className="panel-note">
-            Gen AI / Software Engineer, Level 2 at <b>Grootan Technologies</b>.
-            Agentic AI on AWS. Open to consulting and interesting problems.
-          </div>
-        </div>
-      </div>
     </>
   );
 };

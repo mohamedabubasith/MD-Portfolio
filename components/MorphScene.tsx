@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { sceneState } from '../lib/sceneState';
@@ -33,21 +34,18 @@ function noise3(x: number, y: number, z: number) {
     w,
   );
 }
-/* ridged multifractal: folds give gyri-like grooves on the sphere */
-function ridged(x: number, y: number, z: number) {
-  let a = 0, f = 1.15, amp = 0.55;
+/* soft fbm: a few large lumps, like a drop of black liquid */
+function fbm(x: number, y: number, z: number) {
+  let a = 0, f = 0.9, amp = 0.6;
   for (let o = 0; o < 3; o++) {
-    const n = 1 - Math.abs(noise3(x * f + 31.7, y * f + 7.3, z * f + 19.1) * 2 - 1);
-    a += n * n * amp;
-    f *= 2.05; amp *= 0.5;
+    a += (noise3(x * f + 31.7, y * f + 7.3, z * f + 19.1) - 0.5) * amp;
+    f *= 2.1; amp *= 0.45;
   }
   return a;
 }
-const CORE_R = 1.55;
+const CORE_R = 1.45;
 function coreRadius(nx: number, ny: number, nz: number) {
-  const r = ridged(nx, ny, nz);
-  const seam = Math.exp(-(nx * nx) / 0.012) * 0.07;      // a faint central fissure
-  return CORE_R * (0.93 + 0.13 * r) - seam;
+  return CORE_R * (1 + 0.16 * fbm(nx, ny, nz));
 }
 
 /* PHASE 0 — THE CORE : particles sit on the glossy object's surface so the
@@ -187,11 +185,12 @@ function buildCore() {
   pos.needsUpdate = true;
   geo.computeVertexNormals();
   const mat = new THREE.MeshPhysicalMaterial({
-    color: 0x0b0c14,
-    roughness: 0.38,
+    color: 0x04050a,
+    roughness: 0.26,
     metalness: 0.0,
     clearcoat: 1,
-    clearcoatRoughness: 0.22,
+    clearcoatRoughness: 0.08,
+    envMapIntensity: 0.045,
     transparent: true,
     opacity: 0,
   });
@@ -213,29 +212,33 @@ const MorphScene: React.FC = () => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     const scene = new THREE.Scene();
+    /* a faint room reflection keeps the lacquer continuous between the lights */
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     const camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = CAM_Z;
 
     /* the core sits centre-right of the hero on desktop, centred on mobile */
     const visH = 2 * CAM_Z * Math.tan((FOV / 2) * Math.PI / 180);
     const visW = visH * (window.innerWidth / window.innerHeight);
-    const homeX = mobile ? 0 : visW * 0.14;
+    const homeX = mobile ? 0 : visW * 0.17;
     const homeY = mobile ? 1.6 : 0.1;
-    const baseScale = mobile ? 0.34 : 1;
+    const baseScale = mobile ? 0.36 : 0.92;
 
     const group = new THREE.Group();
     scene.add(group);
     const core = buildCore();
     group.add(core);
 
-    /* lights: an orbiting white key for travelling glints, brand-tinted rim and fill */
-    const key = new THREE.PointLight(0xffffff, 40, 30, 2);
-    const rim = new THREE.DirectionalLight(0x8b7cff, 1.4);
-    rim.position.set(-4, 2, -3);
-    const fill = new THREE.DirectionalLight(0xff6b4a, 0.35);
-    fill.position.set(3, -3, 2);
-    const cool = new THREE.DirectionalLight(0x4ad8c7, 0.8);
-    cool.position.set(4, 4, 1);
+    /* lights: two strong rims from behind draw thin bright contours, a weak
+       coral fill from below, and an orbiting white key for a travelling glint */
+    const key = new THREE.PointLight(0xffffff, 14, 30, 2);
+    const rim = new THREE.DirectionalLight(0x8b7cff, 3.2);
+    rim.position.set(-5, 2.5, -2.5);
+    const cool = new THREE.DirectionalLight(0x4ad8c7, 2.6);
+    cool.position.set(5, 3.5, -2);
+    const fill = new THREE.DirectionalLight(0xff6b4a, 0.45);
+    fill.position.set(1.5, -4, 2);
     scene.add(key, rim, fill, cool);
 
     /* particles share the group so the hand-off lines up with the core */
@@ -324,8 +327,8 @@ const MorphScene: React.FC = () => {
       camera.position.z = CAM_Z - 1.3 * Math.min(1, morph) * (1 - back);
 
       /* the key light orbits so glints travel across the surface */
-      key.position.set(Math.cos(t * 0.5) * 3.2 + group.position.x, 1.6 + Math.sin(t * 0.33) * 1.4, 3.4);
-      key.intensity = 36 + Math.sin(t * 1.7) * 10;
+      key.position.set(Math.cos(t * 0.5) * 3.6 + group.position.x, 1.2 + Math.sin(t * 0.33) * 1.6, 3.2);
+      key.intensity = 12 + Math.sin(t * 1.7) * 4;
 
       renderer.render(scene, camera);
       raf = requestAnimationFrame(tick);
@@ -389,6 +392,7 @@ const MorphScene: React.FC = () => {
       mat.dispose();
       core.geometry.dispose();
       (core.material as THREE.Material).dispose();
+      pmrem.dispose();
       renderer.dispose();
     };
   }, []);
