@@ -2,17 +2,69 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { sceneState } from '../lib/sceneState';
 
 gsap.registerPlugin(ScrollTrigger);
 // Mobile address bars show/hide as the user scrolls, firing resize events
 // that would otherwise make ScrollTrigger re-measure mid-scroll and jump.
 ScrollTrigger.config({ ignoreMobileResize: true });
 
-const COUNT = 8000;
+const COUNT = 22000;
+const FOV = 50;
+const CAM_Z = 7;
 
 function rand(a: number, b: number) { return a + Math.random() * (b - a); }
 
-/* PHASE 0 — PHONE : thin rounded slab shell (the Android years) */
+/* ---- small 3D value noise (CPU, one-time) ---- */
+function hash(x: number, y: number, z: number) {
+  let h = (x * 374761393 + y * 668265263 + z * 2147483647) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+}
+function noise3(x: number, y: number, z: number) {
+  const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z);
+  const xf = x - xi, yf = y - yi, zf = z - zi;
+  const s = (t: number) => t * t * (3 - 2 * t);
+  const u = s(xf), v = s(yf), w = s(zf);
+  const l = (a: number, b: number, t: number) => a + (b - a) * t;
+  return l(
+    l(l(hash(xi, yi, zi), hash(xi + 1, yi, zi), u), l(hash(xi, yi + 1, zi), hash(xi + 1, yi + 1, zi), u), v),
+    l(l(hash(xi, yi, zi + 1), hash(xi + 1, yi, zi + 1), u), l(hash(xi, yi + 1, zi + 1), hash(xi + 1, yi + 1, zi + 1), u), v),
+    w,
+  );
+}
+/* ridged multifractal: folds give gyri-like grooves on the sphere */
+function ridged(x: number, y: number, z: number) {
+  let a = 0, f = 1.15, amp = 0.55;
+  for (let o = 0; o < 3; o++) {
+    const n = 1 - Math.abs(noise3(x * f + 31.7, y * f + 7.3, z * f + 19.1) * 2 - 1);
+    a += n * n * amp;
+    f *= 2.05; amp *= 0.5;
+  }
+  return a;
+}
+const CORE_R = 1.55;
+function coreRadius(nx: number, ny: number, nz: number) {
+  const r = ridged(nx, ny, nz);
+  const seam = Math.exp(-(nx * nx) / 0.012) * 0.07;      // a faint central fissure
+  return CORE_R * (0.93 + 0.13 * r) - seam;
+}
+
+/* PHASE 0 — THE CORE : particles sit on the glossy object's surface so the
+   mesh can hand off to them without a visible jump */
+function genCore(): Float32Array {
+  const a = new Float32Array(COUNT * 3);
+  for (let i = 0; i < COUNT; i++) {
+    const u = Math.random(), v = Math.random();
+    const th = 2 * Math.PI * u, ph = Math.acos(2 * v - 1);
+    const nx = Math.sin(ph) * Math.cos(th), ny = Math.sin(ph) * Math.sin(th), nz = Math.cos(ph);
+    const R = coreRadius(nx, ny, nz) + 0.02;
+    a.set([nx * R, ny * R, nz * R], i * 3);
+  }
+  return a;
+}
+
+/* PHASE 1 — PHONE : thin rounded slab shell (the Android years) */
 function genPhone(): Float32Array {
   const a = new Float32Array(COUNT * 3);
   const W = 1.5, H = 3.1, D = 0.18;
@@ -30,7 +82,7 @@ function genPhone(): Float32Array {
   return a;
 }
 
-/* PHASE 1 — LATTICE : 3D grid cube (cross-platform structure) */
+/* PHASE 2 — LATTICE : 3D grid cube (cross-platform structure) */
 function genLattice(): Float32Array {
   const a = new Float32Array(COUNT * 3);
   const side = Math.round(Math.cbrt(COUNT));
@@ -45,7 +97,7 @@ function genLattice(): Float32Array {
   return a;
 }
 
-/* PHASE 2 — VOICE : layered sound-wave ribbons */
+/* PHASE 3 — VOICE : layered sound-wave ribbons */
 function genWave(): Float32Array {
   const a = new Float32Array(COUNT * 3);
   const RIB = 5;
@@ -61,7 +113,7 @@ function genWave(): Float32Array {
   return a;
 }
 
-/* PHASE 3 — NEURAL CORE : noisy sphere with orbital rings */
+/* PHASE 4 — NETWORK : noisy sphere with orbital rings */
 function genNeural(): Float32Array {
   const a = new Float32Array(COUNT * 3);
   for (let i = 0; i < COUNT; i++) {
@@ -82,23 +134,21 @@ function genNeural(): Float32Array {
 }
 
 const VERT = `
-  attribute vec3 aPos1; attribute vec3 aPos2; attribute vec3 aPos3;
+  attribute vec3 aPos1, aPos2, aPos3, aPos4;
   attribute float aSeed;
-  uniform float uMorph, uTime, uVel, uSize;
+  uniform float uMorph, uTime, uVel, uSize, uBack;
   varying float vSeed;
 
   vec3 pick(float m){
-    vec3 p01 = mix(position, aPos1, smoothstep(0.,1.,clamp(m,0.,1.)));
-    vec3 p12 = mix(aPos1, aPos2, smoothstep(0.,1.,clamp(m-1.,0.,1.)));
-    vec3 p23 = mix(aPos2, aPos3, smoothstep(0.,1.,clamp(m-2.,0.,1.)));
-    vec3 p = p01;
-    p = mix(p, p12, step(1., m));
-    p = mix(p, p23, step(2., m));
+    vec3 p = mix(position, aPos1, smoothstep(0.,1.,m));
+    p = mix(p, aPos2, smoothstep(1.,2.,m));
+    p = mix(p, aPos3, smoothstep(2.,3.,m));
+    p = mix(p, aPos4, smoothstep(3.,4.,m));
     return p;
   }
   void main(){
     vSeed = aSeed;
-    vec3 p = pick(uMorph);
+    vec3 p = mix(pick(uMorph), position, uBack);
     float n = sin(uTime*1.2 + aSeed*40.) * .03;
     p += normalize(p + .001) * (n + uVel * aSeed * .9);
     p.x += sin(uTime*.6 + aSeed*20.)*.02;
@@ -108,18 +158,45 @@ const VERT = `
   }`;
 
 const FRAG = `
-  uniform vec3 uC0,uC1,uC2,uC3; uniform float uMorph;
+  uniform vec3 uC0,uC1,uC2,uC3,uC4; uniform float uMorph, uBack, uAlpha;
   varying float vSeed;
   void main(){
     float d = length(gl_PointCoord - .5);
     if(d > .5) discard;
     float glow = smoothstep(.5,.05,d);
-    vec3 col = mix(uC0,uC1, clamp(uMorph,0.,1.));
-    col = mix(col,uC2, clamp(uMorph-1.,0.,1.));
-    col = mix(col,uC3, clamp(uMorph-2.,0.,1.));
+    vec3 col = mix(uC0,uC1, smoothstep(0.,1.,uMorph));
+    col = mix(col,uC2, smoothstep(1.,2.,uMorph));
+    col = mix(col,uC3, smoothstep(2.,3.,uMorph));
+    col = mix(col,uC4, smoothstep(3.,4.,uMorph));
+    col = mix(col, uC0, uBack);
     col += vSeed*.15;
-    gl_FragColor = vec4(col, glow*.85);
+    gl_FragColor = vec4(col, glow*.85*uAlpha);
   }`;
+
+/* glossy dark core: ridged icosphere, near-black physical material; only the
+   lights put glints on it, like lacquer in a dark room */
+function buildCore() {
+  const geo = new THREE.IcosahedronGeometry(1, 72);
+  const pos = geo.attributes.position as THREE.BufferAttribute;
+  const v = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i).normalize();
+    const R = coreRadius(v.x, v.y, v.z);
+    pos.setXYZ(i, v.x * R, v.y * R, v.z * R);
+  }
+  pos.needsUpdate = true;
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshPhysicalMaterial({
+    color: 0x0b0c14,
+    roughness: 0.38,
+    metalness: 0.0,
+    clearcoat: 1,
+    clearcoatRoughness: 0.22,
+    transparent: true,
+    opacity: 0,
+  });
+  return new THREE.Mesh(geo, mat);
+}
 
 const MorphScene: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -128,20 +205,46 @@ const MorphScene: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobile = window.innerWidth < 820;
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 7;
+    const camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = CAM_Z;
 
+    /* the core sits centre-right of the hero on desktop, centred on mobile */
+    const visH = 2 * CAM_Z * Math.tan((FOV / 2) * Math.PI / 180);
+    const visW = visH * (window.innerWidth / window.innerHeight);
+    const homeX = mobile ? 0 : visW * 0.14;
+    const homeY = mobile ? 1.6 : 0.1;
+    const baseScale = mobile ? 0.34 : 1;
+
+    const group = new THREE.Group();
+    scene.add(group);
+    const core = buildCore();
+    group.add(core);
+
+    /* lights: an orbiting white key for travelling glints, brand-tinted rim and fill */
+    const key = new THREE.PointLight(0xffffff, 40, 30, 2);
+    const rim = new THREE.DirectionalLight(0x8b7cff, 1.4);
+    rim.position.set(-4, 2, -3);
+    const fill = new THREE.DirectionalLight(0xff6b4a, 0.35);
+    fill.position.set(3, -3, 2);
+    const cool = new THREE.DirectionalLight(0x4ad8c7, 0.8);
+    cool.position.set(4, 4, 1);
+    scene.add(key, rim, fill, cool);
+
+    /* particles share the group so the hand-off lines up with the core */
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(genPhone(), 3));
-    geo.setAttribute('aPos1', new THREE.BufferAttribute(genLattice(), 3));
-    geo.setAttribute('aPos2', new THREE.BufferAttribute(genWave(), 3));
-    geo.setAttribute('aPos3', new THREE.BufferAttribute(genNeural(), 3));
+    geo.setAttribute('position', new THREE.BufferAttribute(genCore(), 3));
+    geo.setAttribute('aPos1', new THREE.BufferAttribute(genPhone(), 3));
+    geo.setAttribute('aPos2', new THREE.BufferAttribute(genLattice(), 3));
+    geo.setAttribute('aPos3', new THREE.BufferAttribute(genWave(), 3));
+    geo.setAttribute('aPos4', new THREE.BufferAttribute(genNeural(), 3));
     const seeds = new Float32Array(COUNT);
     for (let i = 0; i < COUNT; i++) seeds[i] = Math.random();
     geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 1));
@@ -150,43 +253,80 @@ const MorphScene: React.FC = () => {
       uMorph: { value: 0 },
       uTime: { value: 0 },
       uVel: { value: 0 },
-      uSize: { value: window.innerWidth < 800 ? 2.2 : 2.8 },
-      uC0: { value: new THREE.Color('#FF6B4A') },
-      uC1: { value: new THREE.Color('#FFB347') },
-      uC2: { value: new THREE.Color('#8B7CFF') },
-      uC3: { value: new THREE.Color('#4AD8C7') },
+      uAlpha: { value: 0 },
+      uBack: { value: 0 },
+      uSize: { value: (mobile ? 2.2 : 2.8) * renderer.getPixelRatio() },
+      uC0: { value: new THREE.Color('#E4E6EF') },
+      uC1: { value: new THREE.Color('#FF6B4A') },
+      uC2: { value: new THREE.Color('#FFB347') },
+      uC3: { value: new THREE.Color('#8B7CFF') },
+      uC4: { value: new THREE.Color('#4AD8C7') },
     };
-
     const mat = new THREE.ShaderMaterial({
-      uniforms,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      vertexShader: VERT,
-      fragmentShader: FRAG,
+      uniforms, transparent: true, depthWrite: false,
+      blending: THREE.AdditiveBlending, vertexShader: VERT, fragmentShader: FRAG,
     });
     const points = new THREE.Points(geo, mat);
-    scene.add(points);
+    group.add(points);
 
-    /* mouse parallax + render loop */
+    /* entrance once the preloader leaves */
+    const enter = { value: reduced ? 1 : 0 };
+    const onAppReady = () => {
+      if (reduced) return;
+      gsap.to(enter, { value: 1, duration: 2.2, ease: 'power3.out', delay: 0.1 });
+      gsap.fromTo(group.scale, { x: 0.6, y: 0.6, z: 0.6 }, { x: baseScale, y: baseScale, z: baseScale, duration: 2.4, ease: 'power3.out' });
+    };
+    group.scale.setScalar(baseScale);
+    if (sceneState.ready) onAppReady();
+    window.addEventListener('app-ready', onAppReady);
+
+    /* pointer parallax + render loop */
     let mX = 0, mY = 0, tX = 0, tY = 0, velSm = 0;
-    const onMouse = (e: MouseEvent) => {
+    const onMove = (e: PointerEvent) => {
       mX = e.clientX / window.innerWidth - 0.5;
       mY = e.clientY / window.innerHeight - 0.5;
     };
-    window.addEventListener('mousemove', onMouse);
+    window.addEventListener('pointermove', onMove);
 
     const clock = new THREE.Clock();
     let raf = 0;
     const tick = () => {
       const t = clock.getElapsedTime();
       uniforms.uTime.value = t;
+
+      /* journey progress: core hands off to particles, then each phase forms
+         during the first half of its card's slot and holds while it is read */
+      const p = sceneState.journey;
+      const hand = Math.min(1, p / 0.06);
+      const m = Math.max(0, (p - 0.06) / 0.94) * 4;
+      const target = Math.min(4, Math.floor(m) + Math.min(1, (m - Math.floor(m)) * 2));
+      uniforms.uMorph.value += (target - uniforms.uMorph.value) * 0.1;
+      const morph = uniforms.uMorph.value;
+      const back = uniforms.uBack.value;
+      const home = Math.max(1 - Math.min(1, morph), back);
+      uniforms.uAlpha.value = hand * (1 - back) * enter.value;
+      (core.material as THREE.MeshPhysicalMaterial).opacity = Math.max(1 - hand, back) * enter.value;
+      core.visible = (core.material as THREE.MeshPhysicalMaterial).opacity > 0.01;
+
       const v = Math.min(Math.abs((ScrollTrigger as any).getVelocity?.() ?? 0) / 9000, 0.5) || 0;
       velSm += (v - velSm) * 0.08;
       uniforms.uVel.value = velSm;
+
       tX += (mX - tX) * 0.05; tY += (mY - tY) * 0.05;
-      points.rotation.y = t * 0.12 + tX * 0.6 + window.scrollY * 0.0006;
-      points.rotation.x = tY * 0.4 + Math.sin(t * 0.2) * 0.05;
+
+      /* idle: slow turn, sway, bob; the cursor tilts it further */
+      group.rotation.y = t * 0.1 + Math.sin(t * 0.37) * 0.18 + tX * 0.55 + p * 3.0 * (1 - home);
+      group.rotation.x = Math.sin(t * 0.29) * 0.1 + tY * 0.35;
+      group.rotation.z = Math.sin(t * 0.21) * 0.04 * home;
+      group.position.x = homeX * home;
+      /* on mobile the morph shapes ride in the upper half, cards sit below */
+      group.position.y = homeY * home + (mobile ? 1.4 * (1 - home) : 0) + Math.sin(t * 0.8) * 0.08 * home;
+      camera.position.z = CAM_Z - 1.3 * Math.min(1, morph) * (1 - back);
+
+      /* the key light orbits so glints travel across the surface */
+      key.position.set(Math.cos(t * 0.5) * 3.2 + group.position.x, 1.6 + Math.sin(t * 0.33) * 1.4, 3.4);
+      key.intensity = 36 + Math.sin(t * 1.7) * 10;
+
       renderer.render(scene, camera);
       raf = requestAnimationFrame(tick);
     };
@@ -208,43 +348,47 @@ const MorphScene: React.FC = () => {
     };
     window.addEventListener('resize', onResize);
 
-    /* scroll → morph + camera dolly + canvas dimming behind dense sections */
-    const triggers: ScrollTrigger[] = [];
+    /* canvas dimming behind dense sections; the core returns behind the
+       contact headline */
+    const triggers: ScrollTrigger[] = [
+      /* the canvas sits over the hero so the core occludes the headline; from
+         the Journey on it drops behind the content so text stays readable */
+      ScrollTrigger.create({
+        trigger: '.journey', start: 'top 95%',
+        onEnter: () => canvas.classList.add('behind'),
+        onLeaveBack: () => canvas.classList.remove('behind'),
+      }),
+    ];
     if (!reduced) {
       triggers.push(
-        gsap.to(uniforms.uMorph, {
-          value: 3, ease: 'none',
-          scrollTrigger: { trigger: '.journey', start: 'top bottom', end: 'bottom top', scrub: 0.6 },
-        }).scrollTrigger!,
-        gsap.fromTo(camera.position, { z: 8.5 }, {
-          z: 5.8, ease: 'none',
-          scrollTrigger: { trigger: '.journey', start: 'top bottom', end: 'bottom top', scrub: 1 },
-        }).scrollTrigger!,
         gsap.to(canvas, {
           opacity: 0.28,
           scrollTrigger: { trigger: '#about', start: 'top 70%', end: 'top 20%', scrub: true },
         }).scrollTrigger!,
         gsap.to(canvas, {
-          opacity: 0.55,
+          opacity: 0.7,
           scrollTrigger: { trigger: '#contact', start: 'top 80%', end: 'top 30%', scrub: true },
+        }).scrollTrigger!,
+        gsap.to(uniforms.uBack, {
+          value: 1, ease: 'none',
+          scrollTrigger: { trigger: '#contact', start: 'top 85%', end: 'top 15%', scrub: 0.8 },
         }).scrollTrigger!,
       );
     } else {
-      uniforms.uMorph.value = 3;
+      uniforms.uMorph.value = 4;
+      sceneState.journey = 1;
     }
-
-    /* async sections (GitHub / Medium) change page height */
-    const onContentLoaded = () => ScrollTrigger.refresh();
-    window.addEventListener('content-loaded', onContentLoaded);
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('mousemove', onMouse);
+      window.removeEventListener('pointermove', onMove);
       window.removeEventListener('resize', onResize);
-      window.removeEventListener('content-loaded', onContentLoaded);
+      window.removeEventListener('app-ready', onAppReady);
       triggers.forEach(t => t.kill());
       geo.dispose();
       mat.dispose();
+      core.geometry.dispose();
+      (core.material as THREE.Material).dispose();
       renderer.dispose();
     };
   }, []);

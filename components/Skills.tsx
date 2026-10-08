@@ -3,14 +3,27 @@ import SectionHead from './SectionHead';
 
 const STACKS = [
   {
-    title: 'AI / ML',
+    title: 'AI / Agents',
     code: 'GEN-AI',
     skills: [
       { name: 'Generative AI & LLMs', val: 95 },
-      { name: 'RAG Architectures', val: 92 },
+      { name: 'AI Agents (Bedrock / Strands)', val: 90 },
+      { name: 'RAG (Standard / HyDE / Hybrid / Graph)', val: 92 },
+      { name: 'MCP Servers', val: 90 },
+      { name: 'LangChain / LangGraph / LlamaIndex', val: 86 },
       { name: 'Vector Databases', val: 90 },
-      { name: 'Prompt Engineering', val: 88 },
-      { name: 'LangChain / LlamaIndex', val: 85 },
+    ],
+  },
+  {
+    title: 'Cloud & Infrastructure',
+    code: 'AWS',
+    skills: [
+      { name: 'AWS Bedrock / Lambda / API Gateway', val: 86 },
+      { name: 'Cognito / Step Functions / Textract', val: 84 },
+      { name: 'Kubeflow / MLOps', val: 82 },
+      { name: 'FastAPI / REST', val: 88 },
+      { name: 'Docker / Kubernetes', val: 78 },
+      { name: 'LiveKit (WebRTC)', val: 85 },
     ],
   },
   {
@@ -21,18 +34,7 @@ const STACKS = [
       { name: 'TypeScript / JavaScript', val: 85 },
       { name: 'Kotlin / Java', val: 82 },
       { name: 'Dart (Flutter)', val: 80 },
-      { name: 'SQL', val: 78 },
-    ],
-  },
-  {
-    title: 'Infrastructure',
-    code: 'INFRA',
-    skills: [
-      { name: 'Kubeflow / MLOps', val: 82 },
-      { name: 'FastAPI / REST', val: 88 },
-      { name: 'Docker / Kubernetes', val: 78 },
-      { name: 'LiveKit (WebRTC)', val: 85 },
-      { name: 'Firebase / Cloud', val: 80 },
+      { name: 'SQL / PostgreSQL', val: 78 },
     ],
   },
   {
@@ -41,9 +43,9 @@ const STACKS = [
     skills: [
       { name: 'Android (Native)', val: 85 },
       { name: 'Flutter', val: 82 },
-      { name: 'React / Next.js', val: 85 },
       { name: 'React Native', val: 78 },
-      { name: 'Tailwind CSS', val: 80 },
+      { name: 'React / Next.js', val: 85 },
+      { name: 'Cordova / Firebase', val: 76 },
     ],
   },
 ];

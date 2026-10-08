@@ -3,51 +3,47 @@ import SectionHead from './SectionHead';
 
 const EXP = [
   {
-    date: '2025',
+    date: 'Jan 2026 – Present',
     now: true,
-    role: 'Generative AI Engineer',
+    role: 'Gen AI / Software Engineer – Level 2',
     co: 'Grootan Technologies',
     bullets: [
-      'Built production-grade real-time voice-to-voice AI agent using LiveKit for WebRTC audio streaming and low-latency communication.',
-      'Integrated speech-to-text, LLM reasoning, and text-to-speech in a sub-300ms pipeline.',
-      'Stacked knowledge base grounding with semantic search and embeddings for context-aware responses.',
+      'Built the Pet Quest picture-validation AI agent on Bedrock Agent with Strands, integrated into WordPress.',
+      'Developed a user portal with Cognito auth and a human-in-the-loop (HITL) document-upload process on Step Functions, integrating Textract and Amazon Bedrock models.',
+      'Shipped a production-ready supplier-operations Admin Portal on AWS Cognito, RDS PostgreSQL, Lambda and API Gateway.',
+      'Orchestrated MCP servers on Flowise into a production-ready AI agent.',
+      'Developed MCP servers across open-source components: ERPNext, Flowise and ThingsBoard.',
+      'Architected an enterprise Knowledge Base platform with Standard, HyDE, Hybrid and Graph RAG pipelines using the Cognee plugin.',
     ],
-    tags: ['Python', 'LiveKit', 'OpenAI', 'RAG', 'WebRTC'],
+    tags: ['AWS Bedrock', 'Strands', 'Step Functions', 'Textract', 'Cognito', 'MCP', 'Flowise', 'Cognee'],
   },
   {
-    date: '2025',
+    date: 'Jan 2022 – Dec 2025',
     now: false,
-    role: 'Enterprise Knowledge Base Platform',
+    role: 'Software Engineer – Level 1 · Gen AI',
     co: 'Grootan Technologies',
     bullets: [
-      'Architected a product-grade enterprise Knowledge Base platform using multi-pipeline RAG with 7 retrieval strategies.',
-      'Implemented Standard, HyDE, Hybrid, Graph, and Contextual Compression RAG pipelines.',
-      'Deployed and orchestrated full multi-pipeline infrastructure on Kubeflow for scalable MLOps.',
+      'Implemented MCP (Model Context Protocol) to connect the AI agent with external tools, APIs and enterprise services for real-time data access.',
+      'Integrated OpenRouter as the multi-provider LLM layer, enabling dynamic model switching across OpenAI, Anthropic and other providers.',
+      'Delivered a dual-mode (voice + text) conversational AI agent with prompt-engineered system prompts, a RAG-based knowledge base and a web-scraping pipeline for live retrieval.',
+      'Built and deployed a production-grade real-time voice-to-voice AI agent on LiveKit for WebRTC audio streaming and low-latency communication.',
+      'Designed vector-database-backed knowledge base grounding with multi-tenancy and user-isolated semantic search, cutting hallucinated responses.',
+      'Developed a Gen AI Document Verification POC for an enterprise client: extracts uploaded-document content, validates it against defined criteria via the OpenAI API, and returns structured JSON for DB and UI.',
     ],
-    tags: ['Kubeflow', 'Qdrant', 'LangChain', 'Python', 'FastAPI'],
-  },
-  {
-    date: '2025',
-    now: false,
-    role: 'Gen AI Document Verification POC',
-    co: 'Saudi Client — Grootan',
-    bullets: [
-      'Developed a POC for automated document verification using Generative AI and multimodal LLM capabilities.',
-      'Integrated Anthropic Claude API to extract, validate, and cross-reference structured and unstructured data.',
-    ],
-    tags: ['Claude API', 'Multimodal', 'Python', 'Document AI'],
+    tags: ['Python', 'LiveKit', 'OpenRouter', 'MCP', 'RAG', 'Qdrant', 'OpenAI API'],
   },
   {
     date: 'Jan 2022 – Dec 2024',
     now: false,
-    role: 'Mobile Application Developer',
+    role: 'Software Engineer – Level 1 · Mobile',
     co: 'Grootan Technologies',
     bullets: [
-      'Designed, developed, and maintained Android, Flutter, and React Native applications across multiple client projects.',
-      'Built Firebase-backed mobile applications with real-time database, authentication, and REST API integration.',
-      'Delivered multiple client apps from spec to Play Store/App Store deployment.',
+      'Designed and developed Android, Flutter, React Native and Cordova applications across multiple client projects.',
+      'Integrated native Android functionality into a React Native wrapper SDK for cross-platform compatibility.',
+      'Worked on the WLA Android financial authentication app, integrating a custom SDK with biometric authentication (Face ID and Touch ID).',
+      'Delivered Firebase-backed Android apps with real-time database, authentication and REST API integration, from spec to Play Store and App Store.',
     ],
-    tags: ['Android', 'Flutter', 'React Native', 'Kotlin', 'Firebase'],
+    tags: ['Android', 'Kotlin', 'Flutter', 'React Native', 'Cordova', 'Firebase'],
   },
   {
     date: 'Jul 2021 – Dec 2021',
@@ -90,7 +86,7 @@ const Experience: React.FC = () => {
         num="/04"
         label="TIMELINE"
         title="Career Log"
-        meta={['2021 ────── 2025', '// ONE COMPANY, MANY CHAPTERS']}
+        meta={['2021 ────── 2026', '// ONE COMPANY, MANY CHAPTERS']}
       />
 
       <div className="timeline">

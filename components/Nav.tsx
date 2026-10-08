@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getLenis, scrollToId } from '../lib/lenis';
 
 const NAV_ITEMS: [string, string][] = [
   ['home', 'INDEX'],
@@ -10,6 +12,16 @@ const NAV_ITEMS: [string, string][] = [
   ['writing', 'SIGNAL'],
   ['contact', 'CHANNEL'],
 ];
+
+const menu = {
+  hidden: { x: '100%' },
+  show: { x: 0, transition: { type: 'spring', stiffness: 140, damping: 22, staggerChildren: 0.05, delayChildren: 0.12 } },
+  exit: { x: '100%', transition: { duration: 0.35, ease: [0.76, 0, 0.24, 1] } },
+} as const;
+const item = {
+  hidden: { opacity: 0, x: 24 },
+  show: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 160, damping: 20 } },
+} as const;
 
 const Nav: React.FC = () => {
   const [active, setActive] = useState('home');
@@ -32,55 +44,63 @@ const Nav: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    const l = getLenis();
+    if (open) l.stop(); else l.start();
   }, [open]);
 
-  const scrollTo = (id: string, e?: React.MouseEvent) => {
+  const go = (id: string, e?: React.MouseEvent) => {
     e?.preventDefault();
-    const el = document.getElementById(id);
-    if (el) {
-      const offset = id === 'home' ? 0 : el.offsetTop - 80;
-      window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
-    }
     setOpen(false);
+    scrollToId(id);
   };
 
   return (
     <>
       <div className={`nav-backdrop${open ? ' show' : ''}`} onClick={() => setOpen(false)} />
       <nav className="nav">
-        <a className="nav-logo" href="#home" onClick={e => scrollTo('home', e)}>MAB®</a>
+        <a className="nav-logo" href="#home" onClick={e => go('home', e)}>MAB®</a>
         {NAV_ITEMS.map(([id, label]) => (
           <a
             key={id}
             href={`#${id}`}
             className={`nav-item${active === id ? ' active' : ''}`}
-            onClick={e => scrollTo(id, e)}
+            onClick={e => go(id, e)}
           >
             {label}
+            {active === id && (
+              <motion.span
+                className="nav-ink"
+                layoutId="nav-ink"
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              />
+            )}
           </a>
         ))}
         <div className="nav-status">
           <span className="dot" />
           <span>ONLINE</span>
         </div>
-        <button className="nav-toggle" onClick={() => setOpen(o => !o)} aria-label="Menu">
+        <button className="nav-toggle" onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open}>
           <span /><span /><span />
         </button>
       </nav>
-      <div className={`nav-mobile-menu${open ? ' show' : ''}`}>
-        {NAV_ITEMS.map(([id, label]) => (
-          <a
-            key={id}
-            href={`#${id}`}
-            className={`nav-mobile-item${active === id ? ' active' : ''}`}
-            onClick={e => scrollTo(id, e)}
-          >
-            {label}
-          </a>
-        ))}
-      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.div className="nav-mobile-menu" variants={menu} initial="hidden" animate="show" exit="exit">
+            {NAV_ITEMS.map(([id, label]) => (
+              <motion.a
+                key={id}
+                variants={item}
+                href={`#${id}`}
+                className={`nav-mobile-item${active === id ? ' active' : ''}`}
+                onClick={e => go(id, e)}
+              >
+                {label}
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

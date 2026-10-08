@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import Magnetic from './Magnetic';
+import Marquee from './Marquee';
+import { scrollToId } from '../lib/lenis';
 
 const WORDS = [
   'building Gen AI systems.',
-  'shipping RAG pipelines.',
+  'shipping Bedrock agents.',
   'designing voice AI agents.',
-  'engineering LLM infra.',
+  'wiring MCP servers.',
+  'engineering RAG pipelines.',
 ];
 
 function TypingLoop() {
@@ -79,40 +83,56 @@ function TelemetryPanel() {
   );
 }
 
+const MARQUEE = ['MOHAMED ABU BASITH', 'GEN AI ENGINEER', 'MOHAMED ABU BASITH', 'AGENTIC AI · AWS'];
+
 const Hero: React.FC = () => {
   const scrollTo = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    scrollToId(id);
   };
 
   return (
-    <section className="hero" id="home">
-      <div className="eyebrow"><span>GENERATIVE AI ENGINEER — CHENNAI, INDIA</span></div>
-      <h1>
-        <span className="line"><span>MOHAMED</span></span>
-        <span className="line"><span className="arc">ABU BASITH.</span></span>
-      </h1>
-      <div className="typing">
-        <span className="prefix">$&gt;</span>
-        <TypingLoop />
-      </div>
-      <p className="sub">
-        I build <b>production-grade Gen AI systems</b> — from real-time voice-to-voice
-        conversational agents to enterprise RAG platforms. 4+ years shipping software,
-        currently leading AI engineering at Grootan Technologies.
-        The particles behind this text tell the story. Scroll.
-      </p>
-      <div className="hero-cta">
-        <a href="#projects" className="btn btn-primary" onClick={scrollTo('projects')}>
-          VIEW WORK <span className="arrow">→</span>
-        </a>
-        <a href="#contact" className="btn" onClick={scrollTo('contact')}>
-          GET IN TOUCH <span className="arrow">↗</span>
-        </a>
-        {/* <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn">
-          RESUME <span className="arrow">↓</span>
-        </a> */}
-      </div>
+    <>
+      <section className="hero" id="home">
+        <div className="eyebrow"><span>GEN AI / SOFTWARE ENGINEER<i className="loc"> — CHENNAI, INDIA</i></span></div>
+
+        {/* giant kinetic headline: slides behind the 3D core */}
+        <div className="hero-marquee">
+          <Marquee items={MARQUEE} />
+        </div>
+
+        <div className="hero-foot">
+          <div className="hero-copy">
+            <div className="typing">
+              <span className="prefix">$&gt;</span>
+              <TypingLoop />
+            </div>
+            <p className="sub">
+              I build <b>production-grade Gen AI systems</b> — voice-to-voice agents,
+              Bedrock agents with human-in-the-loop pipelines, MCP servers and multi-pipeline
+              RAG platforms. 4+ years shipping software at Grootan Technologies.
+            </p>
+            <div className="hero-cta">
+              <Magnetic>
+                <a href="#projects" className="btn btn-primary" onClick={scrollTo('projects')}>
+                  VIEW WORK <span className="arrow">→</span>
+                </a>
+              </Magnetic>
+              <Magnetic>
+                <a href="#contact" className="btn" onClick={scrollTo('contact')}>
+                  GET IN TOUCH <span className="arrow">↗</span>
+                </a>
+              </Magnetic>
+            </div>
+          </div>
+          <h1 className="hero-name">
+            <span className="line"><span>MOHAMED</span></span>
+            <span className="line"><span className="arc">ABU BASITH.</span></span>
+          </h1>
+        </div>
+        <div className="hint">SCROLL TO MORPH</div>
+      </section>
+
       <div className="hero-rail">
         <TelemetryPanel />
         <div className="panel">
@@ -121,13 +141,12 @@ const Hero: React.FC = () => {
             <span style={{ color: 'var(--cyan)' }}>◢ ◣</span>
           </div>
           <div className="panel-note">
-            Leading <b>Gen AI infra</b> at Grootan Technologies.
-            Open to AI consulting and interesting problems.
+            Gen AI / Software Engineer, Level 2 at <b>Grootan Technologies</b>.
+            Agentic AI on AWS. Open to consulting and interesting problems.
           </div>
         </div>
       </div>
-      <div className="hint">SCROLL TO MORPH</div>
-    </section>
+    </>
   );
 };
 

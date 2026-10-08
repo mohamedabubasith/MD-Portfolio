@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { getLenis } from './lib/lenis';
+import { sceneState } from './lib/sceneState';
 import Preloader from './components/Preloader';
 import Cursor from './components/Cursor';
 import ProgressBar from './components/ProgressBar';
@@ -46,9 +48,21 @@ const App: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    // smooth scroll is parked until the preloader leaves
+    getLenis().stop();
+    // async sections (GitHub / Medium) change page height
+    const onContentLoaded = () => ScrollTrigger.refresh();
+    window.addEventListener('content-loaded', onContentLoaded);
+    return () => window.removeEventListener('content-loaded', onContentLoaded);
+  }, []);
+
+  useEffect(() => {
     if (!loaded) return;
     // hero entrance animations are CSS-driven off this class
     document.body.classList.add('ready');
+    sceneState.ready = true;
+    window.dispatchEvent(new Event('app-ready'));
+    getLenis().start();
     // page height settles after the preloader leaves
     ScrollTrigger.refresh();
   }, [loaded]);
@@ -57,6 +71,7 @@ const App: React.FC = () => {
     <>
       <Preloader onDone={() => setLoaded(true)} />
       <MorphScene />
+      <div className="grain" aria-hidden="true" />
       <Cursor />
       <ProgressBar />
       <Nav />

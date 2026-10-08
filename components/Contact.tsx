@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Magnetic from './Magnetic';
 
 const Contact: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -65,10 +66,12 @@ const Contact: React.FC = () => {
               <textarea id="cf-message" name="message" placeholder="what are you building?" rows={5} required disabled={submitting} />
             </div>
             <div className="submit-row">
-              <button type="submit" className="btn btn-primary" disabled={submitting || submitted}>
-                {submitted ? 'TRANSMITTED ✓' : submitting ? 'SENDING...' : 'SEND MESSAGE'}
-                {!submitted && !submitting && <span className="arrow">↗</span>}
-              </button>
+              <Magnetic strength={0.25}>
+                <button type="submit" className="btn btn-primary" disabled={submitting || submitted}>
+                  {submitted ? 'TRANSMITTED ✓' : submitting ? 'SENDING...' : 'SEND MESSAGE'}
+                  {!submitted && !submitting && <span className="arrow">↗</span>}
+                </button>
+              </Magnetic>
               <div className={`submit-status${submitted ? ' show' : ''}`}>
                 Packet delivered — expect a reply within 24h
               </div>
